@@ -10,11 +10,20 @@
 % syntax. For example, replace |myObject(x)| with |step(myObject,x)|.
 %%
 % Load the chirp signal.
-load chirp;
+
+fs=8000;        % sampling frequency (arbitrary)
+D=2;            % duration in seconds
+
+L = ceil(fs*D)+1; % signal duration (samples)
+n = 0:L-1;        % discrete-time axis (samples)
+t = n/fs;         % discrete-time axis (sec)
+x = chirp(t,0,D,fs/2)';   % sine sweep from 0 Hz to fs/2 Hz
+
+% load chirp;
 c = 340.0;
 %%
 % Create the 5-by-5 microphone URA.
-d = 0.5;
+d = 0.4;
 N = 2;
 mic = phased.OmnidirectionalMicrophoneElement;
 array = phased.ULA(N,d,'Element',mic);
@@ -23,18 +32,18 @@ array = phased.ULA(N,d,'Element',mic);
 %%
 % Simulate the incoming signal using the |WidebandCollector| System
 % object(TM).
-arrivalAng = [23;0];
+arrivalAng = [33;0];
 collector = phased.WidebandCollector('Sensor',array,'PropagationSpeed',c,...
-    'SampleRate',Fs,'ModulatedInput',false);
-signal = collector(y,arrivalAng);
+    'SampleRate',fs,'ModulatedInput',false);
+signal = collector(x,arrivalAng);
 %%
 % Estimate the direction of arrival.
 estimator = phased.GCCEstimator('SensorArray',array,...
-    'PropagationSpeed',c,'SampleRate',Fs);
+    'PropagationSpeed',c,'SampleRate',fs);
 ang = estimator(signal)
 
 
-center = (26257+1)/2;
+center = length(signal(:,1)+1);
 
 
 NFFT = 32768;
@@ -50,15 +59,15 @@ xcorr13_phat = fftshift(ifft(Pxx./abs(Pxx)));
 xcorr13_phat = xcorr13_phat(range);
 
 [m,index] = max(xcorr13);
-ang_gcc13 = asin(((index-center)/Fs*c)/d)/pi*180
+ang_gcc13 = asin(((index-center)/fs*c)/d)/pi*180
 
 [m,index] = max(xcorr13_phat);
-ang_gcc13_phat = asin(((index-center)/Fs*c)/d)/pi*180
+ang_gcc13_phat = asin(((index-center)/fs*c)/d)/pi*180
 
 
 a = gccphat(signal(:,1),signal(:,2));
 [m,index] = max(a);
-asin((a/Fs*c)/d)/pi*180
+asin((a/fs*c)/d)/pi*180
 
 
 
