@@ -9,7 +9,6 @@
 % release, replace each call to the function with the equivalent |step|
 % syntax. For example, replace |myObject(x)| with |step(myObject,x)|.
 %%
-% Load the chirp signal.
 
 fs=8000;        % sampling frequency (arbitrary)
 D=2;            % duration in seconds
@@ -23,7 +22,7 @@ x = chirp(t,0,D,fs/2)';   % sine sweep from 0 Hz to fs/2 Hz
 c = 340.0;
 %%
 % Create the 5-by-5 microphone URA.
-d = 0.4;
+d = 0.25;
 N = 2;
 mic = phased.OmnidirectionalMicrophoneElement;
 array = phased.ULA(N,d,'Element',mic);
@@ -32,7 +31,7 @@ array = phased.ULA(N,d,'Element',mic);
 %%
 % Simulate the incoming signal using the |WidebandCollector| System
 % object(TM).
-arrivalAng = [33;0];
+arrivalAng = [22;0];
 collector = phased.WidebandCollector('Sensor',array,'PropagationSpeed',c,...
     'SampleRate',fs,'ModulatedInput',false);
 signal = collector(x,arrivalAng);
@@ -42,29 +41,37 @@ estimator = phased.GCCEstimator('SensorArray',array,...
     'PropagationSpeed',c,'SampleRate',fs);
 ang = estimator(signal)
 
-
+%%
 center = length(signal(:,1)+1);
 
-
 NFFT = 32768;
+interp = 10;
+
+% xcorr length
 N = (length(signal(:,1))+length(signal(:,2)))-1;
+
+% valid lag index
 range = NFFT/2+1-(N-1)/2:NFFT/2+1+(N-1)/2;
+
+% cross-spectrum
 Pxx = fft(signal(:,1),NFFT).*conj(fft(signal(:,2),NFFT));
 
+%%
+% GCC
 xcorr13 = fftshift(ifft(Pxx));
 xcorr13 = xcorr13(range);
-
-xcorr13_phat = fftshift(ifft(Pxx./abs(Pxx)));
-% xcorr13_phat = fftshift(ifft(exp(1j*angle(Pxx))));
-xcorr13_phat = xcorr13_phat(range);
-
 [m,index] = max(xcorr13);
 ang_gcc13 = asin(((index-center)/fs*c)/d)/pi*180
 
+% GCC-PHAT
+xcorr13_phat = fftshift(ifft(Pxx./abs(Pxx),NFFT*interp));
+% range = 4*(NFFT/2+1-(N-1)/2):4*(NFFT/2+1+(N-1)/2);
+% xcorr13_phat = xcorr13_phat(range);
+center = NFFT*interp/2;
 [m,index] = max(xcorr13_phat);
-ang_gcc13_phat = asin(((index-center)/fs*c)/d)/pi*180
+ang_gcc13_phat = asin(((index-center)/(fs*interp)*c)/d)/pi*180
 
-
+%%
 a = gccphat(signal(:,1),signal(:,2));
 [m,index] = max(a);
 asin((a/fs*c)/d)/pi*180
