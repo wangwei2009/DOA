@@ -10,8 +10,8 @@ L = ceil(fs*D)+1; % signal duration (samples)
 n = 0:L-1;        % discrete-time axis (samples)
 t = n/fs;         % discrete-time axis (sec)
 x = chirp(t,0,D,fs/2)';   % sine sweep from 0 Hz to fs/2 Hz
-[x0,fs]=audioread('speech.wav');
-x = filter(Num,1,x0);
+[x,fs]=audioread('speech.wav');
+% x = filter(Num,1,x0);
 c = 340.0;
 %%
 % Create the 5-by-5 microphone URA.
@@ -30,10 +30,16 @@ collector = phased.WidebandCollector('Sensor',array,'PropagationSpeed',c,...
 signal = collector(x,arrivalAng);
 % signal = signal(1:4800,:);
 %%
-% Estimate the direction of arrival.
+% built-in estimator,Estimate the direction of arrival.
 estimator = phased.GCCEstimator('SensorArray',array,...
     'PropagationSpeed',c,'SampleRate',fs);
 ang = estimator(signal)
+
+%%
+% built-in gccphat function test
+a = gccphat(signal(:,1),signal(:,2));
+[m,index] = max(a);
+asin((a/fs*c)/d)/pi*180
 
 %%
 max_lag = d/c*fs;
@@ -59,12 +65,22 @@ xcorr13 = xcorr13(range);
 ang_gcc13 = asin(((index-center)/fs*c)/d)/pi*180
 
 % GCC-PHAT
-xcorr13_phat = fftshift(ifft(Pxx./(abs(Pxx)),NFFT*interp));
+W = 1./abs(Pxx);
+% https://www.dsprelated.com/thread/2149/generalized-cross-correlation-method-not-producing-desired-results
+% set threshold for W, to be verified
+W_max = max(pow2db(W));
+if(W_max>60)
+    W = 1;
+end
+
+xcorr13_phat = fftshift(ifft(Pxx.*W,NFFT*interp));
+    
 xcorr13_phat = xcorr13_phat(range);
 [m,index] = max(xcorr13_phat);
 ang_gcc13_phat = asin(((index-center)/(fs*interp)*c)/d)/pi*180
 
 %%
+% block-wise
 frameLen = 0.03*fs;
 hopSize = 0.015*fs;
 win = hann(frameLen);
@@ -75,7 +91,9 @@ center = (length(range)+1)/2;
 alpha = 0.9;
 I = 10;
 P = zeros(NFFT,I);
+t = 0;
 for i=frameLen*I:hopSize:length(signal(:,1)+1)   
+    %time-averaging
     for j=1:I
         x1 = resample(signal(i-hopSize*j-frameLen+1:i-hopSize*j,1).*win,interp,1);
         x2 = resample(signal(i-hopSize*j-frameLen+1:i-hopSize*j,2).*win,interp,1);
@@ -86,18 +104,21 @@ for i=frameLen*I:hopSize:length(signal(:,1)+1)
 %     Px1x2 = (1-alpha)*Px1x2+alpha*bsxfun(@times, fft(x1.*1,NFFT),conj(fft(x2.*1,NFFT)));
     Px1x2=mean(P,2);
     
-    xcorr13_block_phat = fftshift(ifft(bsxfun(@rdivide, Px1x2,abs(Px1x2)),NFFT));
+    W = 1./abs(Px1x2);
+    W_max = max(pow2db(W));
+    if(W_max>60)
+        W = 1;
+    end
+    
+    xcorr13_block_phat = fftshift(ifft(bsxfun(@times, Px1x2,W),NFFT));
     xcorr13_block_phat = xcorr13_block_phat(range);
     [m,index] = max((xcorr13_block_phat));
+    t =t +1;
     lag = index-center
-    gcc_phat = asin(((lag)/(fs*interp)*c)/d)/pi*180
+    gcc_phat(t) = asin(((lag)/(fs*interp)*c)/d)/pi*180;
 end
 
-%%
-% built-in function test
-a = gccphat(signal(:,1),signal(:,2));
-[m,index] = max(a);
-asin((a/fs*c)/d)/pi*180
+
 
 
 
