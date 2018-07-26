@@ -10,7 +10,7 @@ L = ceil(fs*D)+1; % signal duration (samples)
 n = 0:L-1;        % discrete-time axis (samples)
 t = n/fs;         % discrete-time axis (sec)
 x = chirp(t,0,D,fs/2)';   % sine sweep from 0 Hz to fs/2 Hz
-[x,fs]=audioread('speech.wav');
+[x,fs]=audioread('../speech.wav');
 % x = filter(Num,1,x0);
 c = 340.0;
 %%
@@ -117,6 +117,8 @@ for i=frameLen*I:hopSize:length(signal(:,1)+1)
     lag = index-center
     gcc_phat(t) = asin(((lag)/(fs*interp)*c)/d)/pi*180;
 end
+%average result
+mean(gcc_phat)
 
 
 
