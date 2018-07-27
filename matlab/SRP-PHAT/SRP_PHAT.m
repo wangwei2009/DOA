@@ -38,12 +38,19 @@ array = phased.ULA(N,d,'Element',mic);
 %%
 % Simulate the incoming signal using the |WidebandCollector| System
 % object(TM).
-arrivalAng = [28;0];
+arrivalAng = [15;0];
 collector = phased.WidebandCollector('Sensor',array,'PropagationSpeed',c,...
     'SampleRate',fs,'ModulatedInput',false);
 s = collector(speech,arrivalAng);
 % signal = signal(1:4800,:);
 signal = s+noise;
+
+%%
+path = '../../TestAudio/44100/';
+[noise7,fs] = audioread([path,'“ÙπÏ-7.wav']);
+noise0 = audioread([path,'“ÙπÏ.wav']);
+noise4 = audioread([path,'“ÙπÏ-4.wav']);
+signal = [noise7,noise0,noise4];
 %%
 t = 0;
 P = zeros(1,length(-90:step:90-step));
@@ -56,7 +63,7 @@ for i = -90:step:90-step
 end
 toc
 [m,index] = max(P);
-hold on,plot(-90:step:90-step,P/max(P))
+figure,plot(-90:step:90-step,P/max(P))
 (index-90+step)*step
 
 
