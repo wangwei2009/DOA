@@ -1,6 +1,6 @@
 function [ DS, x1] = DelaySumURA( x,fs,N,frameLength,inc,r,angle)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%frequency-domain delay-sum beamformer
+%frequency-domain delay-sum beamformer using circular array
 %   
 %      input :
 %          x : input signal ,samples * channel
@@ -23,7 +23,10 @@ Nele = size(x,2);
 omega = zeros(frameLength,1);
 H = zeros(N/2+1,Nele);
 % tao = d*sin(angle(1))*cos(angle(2))*[0:Nele-1]/c;     %方位角 -90 < theta <90
-tao = r*sin(angle(1))*[0:Nele-1]/c;     %方位角 -90 < theta <90
+% tao = r*sin(angle(1))*[0:Nele-1]/c;     %方位角 -90 < theta <90
+theta = 85*pi/180; %固定一个俯仰角
+gamma = [30 150 210 330]*pi/180;%麦克风位置
+tao = r*sin(theta)*cos(angle(1)-gamma)/c;     %方位角 -90 < theta <90
 yds = zeros(length(x(:,1)),1);
 x1 = zeros(size(x));
 for i = 1:inc:length(x(:,1))-frameLength
@@ -41,7 +44,7 @@ for i = 1:inc:length(x(:,1))-frameLength
     x_fft=bsxfun(@times, d(1:N/2+1,:),H);
     
     % phase transformed
-    x_fft = bsxfun(@rdivide, x_fft,abs(d(1:N/2+1,:)));
+    %x_fft = bsxfun(@rdivide, x_fft,abs(d(1:N/2+1,:)));
     yf = sum(x_fft,2);
     Cf = [yf;conj(flipud(yf(1:N/2-1)))];
     

@@ -47,24 +47,29 @@ signal = s+noise;
 
 %%
 path = '../../TestAudio/num3_MIC5/';
-[noise7,fs] = audioread([path,'“ÙπÏ-7.wav']);
-noise0 = audioread([path,'“ÙπÏ.wav']);
-noise4 = audioread([path,'“ÙπÏ-4.wav']);
-signal = [noise7,noise0,noise4];
+[s1,fs] = audioread([path,'“ÙπÏ-2.wav']);
+s5 = audioread([path,'“ÙπÏ-6.wav']);
+s4 = audioread([path,'“ÙπÏ-5.wav']);
+s2 = audioread([path,'“ÙπÏ-3.wav']);
+signal = [s1,s5,s4,s2];
 %%
 t = 0;
-P = zeros(1,length(-90:step:90-step));
+
 step = 1;
+P = zeros(1,length(0:step:360-step));
 tic
-for i = -90:step:90-step
-    [ DS, x1] = phaseshift(signal,fs,256,256,128,d,i/180*pi);
+h = waitbar(0,'Please wait...');
+for i = 0:step:360-step
+    [ DS, x1] = DelaySumURA(signal,fs,256,256,128,d,i/180*pi);
     t = t+1;
     P(t) = DS'*DS;
+    waitbar(i / length(step:360-step))
 end
 toc
+close(h) 
 [m,index] = max(P);
-figure,plot(-90:step:90-step,P/max(P))
-(index-90+step)*step
+figure,plot(0:step:360-step,P/max(P))
+(index)*step
 
 
 
