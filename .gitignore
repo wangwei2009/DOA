@@ -12,6 +12,8 @@ CMakeCache.txt
 
 *.asv
 
+*.pk
+
 *.d
 
 # Object files

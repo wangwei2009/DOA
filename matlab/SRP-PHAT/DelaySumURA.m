@@ -15,27 +15,22 @@ function [ DS, x1] = DelaySumURA( x,fs,N,frameLength,inc,r,angle)
 %         DS : delay-sum output
 %         x1 : presteered signal,same size as x
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% N = 256;
-% inc = 32;
-% frameLength = 256;
+
 c = 340;
 Nele = size(x,2);
 omega = zeros(frameLength,1);
 H = zeros(N/2+1,Nele);
-% tao = d*sin(angle(1))*cos(angle(2))*[0:Nele-1]/c;     %方位角 -90 < theta <90
-% tao = r*sin(angle(1))*[0:Nele-1]/c;     %方位角 -90 < theta <90
+
 theta = 85*pi/180; %固定一个俯仰角
 gamma = [30 150 210 330]*pi/180;%麦克风位置
-tao = r*sin(theta)*cos(angle(1)-gamma)/c;     %方位角 -90 < theta <90
+tao = r*sin(theta)*cos(angle(1)-gamma)/c;     %方位角 0 < angle <360
 yds = zeros(length(x(:,1)),1);
 x1 = zeros(size(x));
 for i = 1:inc:length(x(:,1))-frameLength
     for k = 2:N/2+1
-        omega(k) = 2*pi*(k-1)*fs/N;        
-%         H(k,:) = [1;exp(-1j*omega(k)*tao);exp(-1j*omega(k)*2*tao)];
-        %对齐向量，以第一个阵元为参考，
-        %例如若第一个阵元最慢(theata>0),则将第2、3、....个阵元分别延迟exp(-j*w*m*tao)
-%         H(k,:) = [1;exp(-1j*omega(k)*tao);exp(-1j*omega(k)*2*tao);];
+        omega(k) = 2*pi*(k-1)*fs/N;   
+        
+        % steering vector
         H(k,:) = exp(-1j*omega(k)*tao);
     end
     d = fft(bsxfun(@times, x(i:i+frameLength-1,:),hamming(frameLength)'));
