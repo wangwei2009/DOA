@@ -7,20 +7,20 @@
 c = 340.0;
 
 % XMOS circular microphone array radius
-d = 0.042;
+d = 0.0457;
 %%
 % more test audio file in ../../TestAudio/ folder
-path = '../../TestAudio/meetingroom_MIC4/';
+path = '../../TestAudio/respeaker/mic4/';
 [s1,fs] = audioread([path,'“ÙπÏ-2.wav']);
-s5 = audioread([path,'“ÙπÏ-6.wav']);
-s4 = audioread([path,'“ÙπÏ-5.wav']);
-s2 = audioread([path,'“ÙπÏ-3.wav']);
+s5 = audioread([path,'“ÙπÏ-3.wav']);
+s4 = audioread([path,'“ÙπÏ-4.wav']);
+s2 = audioread([path,'“ÙπÏ-5.wav']);
 signal = [s1,s5,s4,s2];
 %%
 t = 0;
 
 % minimal searching grid
-step = 10;
+step = 1;
 
 P = zeros(1,length(0:step:360-step));
 tic
