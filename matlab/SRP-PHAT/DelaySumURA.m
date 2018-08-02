@@ -19,7 +19,7 @@ function [ DS, x1] = DelaySumURA( x,fs,N,frameLength,inc,r,angle)
 c = 340;
 Nele = size(x,2);
 omega = zeros(frameLength,1);
-H = ones(N/2+1,Nele);
+H = zeros(N/2+1,Nele);
 
 theta = 90*pi/180; %固定一个俯仰角
 gamma = [0 90 180 270]*pi/180;%麦克风位置
@@ -36,7 +36,7 @@ end
     
 for i = 1:inc:length(x(:,1))-frameLength
 
-    d = fft(bsxfun(@times, x(i:i+frameLength-1,:),hamming(frameLength)));
+    d = fft(bsxfun(@times, x(i:i+frameLength-1,:),hann(frameLength,'periodic')));
 %     d = fft(x(i:i+frameLength-1,:).*hamming(frameLength)');
 %     x_fft = d(1:129,:).*H;%./abs(d(1:129,:));
     x_fft=bsxfun(@times, d(1:N/2+1,:),H);
@@ -44,7 +44,7 @@ for i = 1:inc:length(x(:,1))-frameLength
     % phase transformed
     %x_fft = bsxfun(@rdivide, x_fft,abs(d(1:N/2+1,:)));
     yf = sum(x_fft,2);
-    Cf = [yf;conj(flipud(yf(1:N/2-1)))];
+    Cf = [yf;conj(flipud(yf(2:N/2)))];
     
     % 恢复延时累加的信号
     yds(i:i+frameLength-1) = yds(i:i+frameLength-1)+(ifft(Cf));

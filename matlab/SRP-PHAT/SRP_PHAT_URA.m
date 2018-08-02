@@ -39,7 +39,9 @@ close(h)
 figure,plot(0:step:360-step,P/max(P))
 (index)*step
 
-[ DS, x1] = DelaySumURA(signal,fs,256,256,128,d,317/180*pi);
+[ DS, x1] = DelaySumURA(signal,fs,512,512,256,d,(index)*step/180*pi);
+% audiowrite('DS8.wav',real(DS),fs)
+% audiowrite('signal1.wav',signal(:,1),fs)
 
 
 
