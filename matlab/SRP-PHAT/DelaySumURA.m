@@ -26,13 +26,16 @@ gamma = [0 90 180 270]*pi/180;%麦克风位置
 tao = r*sin(theta)*cos(angle(1)-gamma)/c;     %方位角 0 < angle <360
 yds = zeros(length(x(:,1)),1);
 x1 = zeros(size(x));
+
+% frequency bin weights
+for k = 2:1:N/2+1
+    omega(k) = 2*pi*(k-1)*fs/N;   
+    % steering vector
+    H(k,:) = exp(-1j*omega(k)*tao);
+end
+    
 for i = 1:inc:length(x(:,1))-frameLength
-    for k = 2:1:N/2+1
-        omega(k) = 2*pi*(k-1)*fs/N;   
-        
-        % steering vector
-        H(k,:) = exp(-1j*omega(k)*tao);
-    end
+
     d = fft(bsxfun(@times, x(i:i+frameLength-1,:),hamming(frameLength)));
 %     d = fft(x(i:i+frameLength-1,:).*hamming(frameLength)');
 %     x_fft = d(1:129,:).*H;%./abs(d(1:129,:));
