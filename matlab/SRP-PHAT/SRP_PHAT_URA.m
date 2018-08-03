@@ -27,7 +27,7 @@ tic
 h = waitbar(0,'Please wait...');
 for i = 0:step:360-step
     % Delay-and-sum beamforming
-    [ DS, x1] = DelaySumURA(signal,fs,256,256,128,d,i/180*pi);
+    [ DS, x1] = DelaySumURA(signal,fs,512,512,256,d,i/180*pi);
     t = t+1;
     %beamformed output energy
     P(t) = DS'*DS;
@@ -39,9 +39,12 @@ close(h)
 figure,plot(0:step:360-step,P/max(P))
 (index)*step
 
-[ DS, x1] = DelaySumURA(signal,fs,512,512,256,d,(index)*step/180*pi);
-% audiowrite('DS8.wav',real(DS),fs)
+[ DS, x1] = DelaySumURA(signal,fs,1024,1024,512,d,(index)*step/180*pi);
+% audiowrite('DS7.wav',real(DS),fs)
 % audiowrite('signal1.wav',signal(:,1),fs)
+
+[ z ] = postprocessing(signal,0,fs,(index)*step);
+audiowrite('z1.wav',z,fs)
 
 
 

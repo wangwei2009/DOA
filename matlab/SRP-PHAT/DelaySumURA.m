@@ -19,7 +19,7 @@ function [ DS, x1] = DelaySumURA( x,fs,N,frameLength,inc,r,angle)
 c = 340;
 Nele = size(x,2);
 omega = zeros(frameLength,1);
-H = zeros(N/2+1,Nele);
+H = ones(N/2+1,Nele);
 
 theta = 90*pi/180; %固定一个俯仰角
 gamma = [0 90 180 270]*pi/180;%麦克风位置
@@ -28,7 +28,8 @@ yds = zeros(length(x(:,1)),1);
 x1 = zeros(size(x));
 
 % frequency bin weights
-for k = 2:1:N/2+1
+% for k = 2:1:N/2+1
+for k = 16:1:5000*N/fs
     omega(k) = 2*pi*(k-1)*fs/N;   
     % steering vector
     H(k,:) = exp(-1j*omega(k)*tao);
@@ -36,7 +37,7 @@ end
     
 for i = 1:inc:length(x(:,1))-frameLength
 
-    d = fft(bsxfun(@times, x(i:i+frameLength-1,:),hann(frameLength,'periodic')));
+    d = fft(bsxfun(@times, x(i:i+frameLength-1,:),hamming(frameLength)));
 %     d = fft(x(i:i+frameLength-1,:).*hamming(frameLength)');
 %     x_fft = d(1:129,:).*H;%./abs(d(1:129,:));
     x_fft=bsxfun(@times, d(1:N/2+1,:),H);
@@ -51,7 +52,7 @@ for i = 1:inc:length(x(:,1))-frameLength
     
     
     % 恢复各路对齐后的信号
-    xf  = [x_fft;conj(flipud(x_fft(1:N/2-1,:)))];
+    xf  = [x_fft;conj(flipud(x_fft(2:N/2,:)))];
     x1(i:i+frameLength-1,:) = x1(i:i+frameLength-1,:)+(ifft(xf));
 end
 DS = yds/Nele;  
