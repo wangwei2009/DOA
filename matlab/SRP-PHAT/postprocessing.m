@@ -1,4 +1,4 @@
-function [ z ] = postprocessing( x,y,fs,angle)
+function [ z ] = postprocessing( x,DS0,fs,angle)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  General post-filter based on noise filed coherence  
 %
@@ -16,14 +16,14 @@ DEBUG = 0;
 Nele = size(x,2);
 % x = s;
 N = 256;
-inc = 64;
+inc = 128;
 frameLength = 256;
 % angle = [80;0];
 % angle = [-31.9500;-45.7377];
 angle = angle*pi/180;
 d = 0.0457;
-[ DS0, x1] = DelaySumURA(x,fs,N,frameLength,inc,d,angle);
-x = real(x1);
+% [ DS0, x1] = DelaySumURA(x,fs,N,frameLength,inc,d,angle);
+x = real(x);
 % DS0 = sum(x,2)/Nele;
 % x = x;
 % compute input SNR
@@ -52,7 +52,7 @@ t = 1;
 
 %the distance between two adjacent microphone,XMOS microphone array board
 %was used
-r = 0.042; 
+r = 0.0457; 
 
 % the distance between two microphone
 dij = [r,sqrt(2)*r,r,...
@@ -74,7 +74,7 @@ tic
 %
 frame_len = 256;
 fft_len = frameLength;
-inc = 64;
+inc = 128;
 nchs = Nele;
 x0 = enframe(x(:, 1), rectwin(frame_len), inc,'z');
 DS = enframe(DS0, window, inc,'z')';
@@ -87,7 +87,7 @@ Pss_e = zeros(Nele*(Nele-1)/2, fft_len/2+1 , size(x0, 1));
 
 % 计算自功率谱
 for ch = 1:nchs
-    X(ch,:, :) = enframe(x(:, ch), rectwin(frame_len)', inc,'z')';
+    X(ch,:, :) = enframe(x(:, ch), hann(frame_len)', inc,'z')';
     Pxii(ch, :, :) = cpsd(squeeze(X(ch,:, :)),squeeze(X(ch,:, :)), hanning(128), 64);
 end
 Pssnn = sum(Pxii)/Nele;
@@ -99,7 +99,7 @@ Pssnn = squeeze(Pssnn);
 for i = 1:Nele-1
     for j = i+1:Nele
         Pxij(t,:,:) = cpsd(squeeze(X(i,:, :)),squeeze(X(j,:, :)),hanning(128),64);
-        T = sin(2*pi*f*dij(t)*2/c)./(2*pi*f*dij(t)*2/c);T(1) = 0.999;%T(2) = 0.996;
+        T = sin(2*pi*f*dij(t)*1.8/c)./(2*pi*f*dij(t)*1.8/c);T(1) = 0.999;%T(2) = 0.996;
         T = repmat(T',1,size(x0, 1));
         Pss_e(t,:,:) = (real(squeeze(Pxij(t,:,:))) - 0.5*real(T).*(squeeze(Pxii(i,:,:))+squeeze(Pxii(j,:,:))))...
                          ./...

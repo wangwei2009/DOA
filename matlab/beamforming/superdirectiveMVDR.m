@@ -21,7 +21,7 @@ function [ DS, x1,H,DI] = superdirectiveMVDR( x,fs,N,frameLength,inc,r,angle,Fvv
 c = 340;
 Nele = size(x,2);
 omega = zeros(frameLength,1);
-H = ones(N/2+1,Nele);
+H = ones(N/2+1,Nele)';
 
 theta = 90*pi/180; %固定一个俯仰角
 gamma = [0 90 180 270]*pi/180;%麦克风位置
@@ -35,7 +35,7 @@ for k = 1:N/2+1
         omega(k) = 2*pi*(k-1)*fs/N;    
         
         % 方向向量
-        d = exp(-1j*omega(k)*tao);
+        d = exp(-1j*omega(k)*tao');
 %         H(k,:) = [1;exp(-1j*omega(k)*tao);exp(-1j*omega(k)*2*tao)];
         %对齐向量，以第一个阵元为参考，
         %例如若第一个阵元最慢(theata>0),则将第2、3、....个阵元分别延迟exp(-j*w*m*tao)
@@ -43,10 +43,10 @@ for k = 1:N/2+1
 
         % MVDR soulution
 %         Fvvk = diag(ones(1,Nele));%squeeze(Fvv(k,:,:));
-        Fvvk = squeeze(Fvv(k,:,:))+0*eye(Nele);
+        inv_Fvv = inv(squeeze(Fvv(k,:,:))+1e-6*eye(Nele));
         if(1)%k~=31&&k~=20&&k~=16)
-        H(:,k) =    Fvvk\d ...
-                 ./(d'/Fvvk*d);
+        H(:,k) =    inv_Fvv*d ...
+                 ./(d'*inv_Fvv*d);
 %         H(:,k) =   1;
         DI(k) = (abs(H(:,k)'*d))^2 ...
                 /(H(:,k)'*squeeze(Fvv(k,:,:))*H(:,k));
