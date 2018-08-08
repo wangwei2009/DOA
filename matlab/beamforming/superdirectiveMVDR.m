@@ -43,10 +43,10 @@ for k = 1:N/2+1
 
         % MVDR soulution
 %         Fvvk = diag(ones(1,Nele));%squeeze(Fvv(k,:,:));
-        inv_Fvv = inv(squeeze(Fvv(k,:,:))+1e-2*eye(Nele));
+        Fvv_k = (squeeze(Fvv(k,:,:))+1e-12*eye(Nele));
         if(1)%k~=31&&k~=20&&k~=16)
-        H(:,k) =    inv_Fvv*d ...
-                 ./(d'*inv_Fvv*d);
+        H(:,k) =    Fvv_k\d ...
+                 ./(d'/Fvv_k*d);
 %         H(:,k) =   1;
         DI(k) = (abs(H(:,k)'*d))^2 ...
                 /(H(:,k)'*squeeze(Fvv(k,:,:))*H(:,k));

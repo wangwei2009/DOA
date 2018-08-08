@@ -46,7 +46,9 @@ ang = 319;
 
 %% diffuse noise field MSC
 N = 256;
-f = (0:1:129-1)*fs/N;
+
+f = (1:129)*fs/N;
+% f(1) = 1e-8;
 Fvv = zeros(129,M,M);
 for i = 1:M
     for j = 1:M   
@@ -59,14 +61,14 @@ for i = 1:M
                 dij = d*sqrt(2);
             end
             Fvv(:,i,j) = sin(2*pi*f*dij*1/c)./(2*pi*f*dij*1/c);%T(1) = 0.999;%T(2) = 0.996;
-            Fvv(1,i,j) = 0.99;
-%             Fvv(2,i,j) = 0.99;
         end
     end
 end
 
 [ DS, x1,~,DI] = superdirectiveMVDR(signal,fs,256,256,128,d,ang/180*pi,Fvv);
-% audiowrite('super5.wav',DS,fs)
+
+% audiowrite('super3.wav',DS,fs)
+
 % audiowrite('DS7.wav',real(DS),fs)
 % audiowrite('signal1.wav',signal(:,1),fs)
 

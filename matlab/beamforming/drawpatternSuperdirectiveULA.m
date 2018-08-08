@@ -21,9 +21,9 @@ N = 256;
 d = 0.05;
 c = 340;
 
-% f = (0:fs/256:fs/2)';
 f = (0:1:129-1)*fs/N;
-f(1) = 1e1;
+f(1) = 1e-8;
+
 Nele = element_num;
 
 %% diffuse noise field MSC
@@ -47,11 +47,11 @@ H = zeros(Nele,N/2+1);
 DI_sdb = zeros(N/2+1,1);  % superdirective directive factor
 DI_dsb = zeros(N/2+1,1);  % DS directive factor
 
-DI_sdb = zeros(N/2+1,1);  % superdirective directive factor
-DI_dsb = zeros(N/2+1,1);  % DS directive factor
+WGN_sdb = zeros(N/2+1,1);  % superdirective directive factor
+WGN_dsb = zeros(N/2+1,1);  % DS directive factor
 
 y2 = zeros(128,length(theta));
-for k = 1:129
+for k = 2:129
 % for k = 32:32
 for  j=1:length(theta)
     omega(k) = 2*pi*(k-1)*fs/N;
@@ -60,12 +60,19 @@ for  j=1:length(theta)
     y1(k,j)=w0'*a;
     DI_dsb(k) = (abs(w0'*w0))^2 ...
                 /(w0'*squeeze(Fvv(k,:,:))*w0);
+    WGN_dsb(k) =  (abs(w0'*w0))^2 ...
+                /(w0'*w0);       
+            
     % MVDR soulution
-    Fvv_k = (squeeze(Fvv(k,:,:))+1e-6*eye(Nele));
+    Fvv_k = (squeeze(Fvv(k,:,:))+1e-12*eye(Nele));
     H(:,k) =    Fvv_k\w0 ...
                  ./(w0'/Fvv_k*w0);
+
     DI_sdb(k) = (abs(H(:,k)'*w0))^2 ...
                 /(H(:,k)'*squeeze(Fvv(k,:,:))*H(:,k));
+            
+    WGN_sdb(k) = (abs(H(:,k)'*w0))^2 ...
+                /(H(:,k)'*H(:,k));
             
     y2(k,j)=H(:,k)'*(a);
     
@@ -83,5 +90,9 @@ zlim([-40 0]);
 
 figure,plot(f,pow2db(abs(DI_dsb))),ylim([0 15]),grid on
 hold on,plot(f,pow2db(abs(DI_sdb))),ylim([0 15]),grid on
-legend('delaysum','superdirective');
+legend('delaysum','superdirective'),title('Directivity Index')
+
+figure,plot(f,pow2db(WGN_dsb))
+hold on,plot(f,pow2db(WGN_sdb))
+legend('delaysum','superdirective'),title('WGN')
 
