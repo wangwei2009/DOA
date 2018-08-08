@@ -16,6 +16,7 @@ s5 = audioread([path,'“ÙπÏ-3.wav']);
 s4 = audioread([path,'“ÙπÏ-4.wav']);
 s2 = audioread([path,'“ÙπÏ-5.wav']);
 signal = [s1,s5,s4,s2];
+M = size(signal,2);
 %%
 t = 0;
 
@@ -41,14 +42,36 @@ t = 0;
 
 ang = 319;
 
-[ DS, x1] = DelaySumURA(signal,fs,1024,1024,512,d,ang/180*pi);
+% [ DS, x1] = DelaySumURA(signal,fs,1024,1024,512,d,ang/180*pi);
 
-[ DS, x1] = superdirectiveMVDR(signal,fs,256,256,128,d,(index)*step/180*pi);
+%% diffuse noise field MSC
+N = 256;
+f = (0:1:129-1)*fs/N;
+Fvv = zeros(129,M,M);
+for i = 1:M
+    for j = 1:M   
+        if i == j
+            Fvv(:,i,j) = ones(1,N/2+1);
+        else
+            if(mod(abs(i-j),2)==0)
+                dij = d*2;
+            else
+                dij = d*sqrt(2);
+            end
+            Fvv(:,i,j) = sin(2*pi*f*dij*1/c)./(2*pi*f*dij*1/c);%T(1) = 0.999;%T(2) = 0.996;
+            Fvv(1,i,j) = 0.99;
+%             Fvv(2,i,j) = 0.99;
+        end
+    end
+end
+
+[ DS, x1,~,DI] = superdirectiveMVDR(signal,fs,256,256,128,d,ang/180*pi,Fvv);
+% audiowrite('super5.wav',DS,fs)
 % audiowrite('DS7.wav',real(DS),fs)
 % audiowrite('signal1.wav',signal(:,1),fs)
 
-[ z ] = postprocessing(signal,0,fs,(index)*step);
-audiowrite('z1.wav',z,fs)
+% [ z ] = postprocessing(signal,0,fs,(index)*step);
+% audiowrite('z1.wav',z,fs)
 
 
 

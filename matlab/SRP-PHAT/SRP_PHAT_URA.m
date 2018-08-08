@@ -40,11 +40,11 @@ figure,plot(0:step:360-step,P/max(P))
 (index)*step
 
 [ DS, x1] = DelaySumURA(signal,fs,1024,1024,512,d,(index)*step/180*pi);
-% audiowrite('DS7.wav',real(DS),fs)
+% audiowrite('DS.wav',real(DS),fs)
 % audiowrite('signal1.wav',signal(:,1),fs)
 
-[ z ] = postprocessing(signal,0,fs,(index)*step);
-audiowrite('z1.wav',z,fs)
+[ z ] = postprocessing(x1,DS,fs,(index)*step);
+audiowrite('z9.wav',z,fs)
 
 
 

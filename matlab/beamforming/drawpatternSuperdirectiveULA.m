@@ -22,7 +22,8 @@ d = 0.05;
 c = 340;
 
 % f = (0:fs/256:fs/2)';
-f = (1:129)*fs/N;
+f = (0:1:129-1)*fs/N;
+f(1) = 1e1;
 Nele = element_num;
 
 %% diffuse noise field MSC
@@ -45,6 +46,10 @@ H = zeros(Nele,N/2+1);
 % H = zeros(N/2+1,Nele);
 DI_sdb = zeros(N/2+1,1);  % superdirective directive factor
 DI_dsb = zeros(N/2+1,1);  % DS directive factor
+
+DI_sdb = zeros(N/2+1,1);  % superdirective directive factor
+DI_dsb = zeros(N/2+1,1);  % DS directive factor
+
 y2 = zeros(128,length(theta));
 for k = 1:129
 % for k = 32:32
@@ -56,9 +61,9 @@ for  j=1:length(theta)
     DI_dsb(k) = (abs(w0'*w0))^2 ...
                 /(w0'*squeeze(Fvv(k,:,:))*w0);
     % MVDR soulution
-    inv_Fvv = inv(squeeze(Fvv(k,:,:))+1e-6*eye(Nele));
-    H(:,k) =    inv_Fvv*w0 ...
-                 ./(w0'*inv_Fvv*w0);
+    Fvv_k = (squeeze(Fvv(k,:,:))+1e-6*eye(Nele));
+    H(:,k) =    Fvv_k\w0 ...
+                 ./(w0'/Fvv_k*w0);
     DI_sdb(k) = (abs(H(:,k)'*w0))^2 ...
                 /(H(:,k)'*squeeze(Fvv(k,:,:))*H(:,k));
             
@@ -76,5 +81,7 @@ zlim([-40 0]);
 figure,mesh(theta*180/pi,(0:1:129-1)*fs/N,pow2db(abs(y2)/max(max(abs(y2)))))
 zlim([-40 0]);
 
-figure,plot(pow2db(abs(DI_dsb))),title('delaysum directivity index')
-figure,plot(pow2db(abs(DI_sdb))),title('superdirective directivity index')
+figure,plot(f,pow2db(abs(DI_dsb))),ylim([0 15]),grid on
+hold on,plot(f,pow2db(abs(DI_sdb))),ylim([0 15]),grid on
+legend('delaysum','superdirective');
+
