@@ -29,7 +29,7 @@ x1 = zeros(size(x));
 
 % frequency bin weights
 % for k = 2:1:N/2+1
-for k = 16:1:5000*N/fs
+for k = 1:1:5000*N/fs
     omega(k) = 2*pi*(k-1)*fs/N;   
     % steering vector
     H(k,:) = exp(-1j*omega(k)*tao);

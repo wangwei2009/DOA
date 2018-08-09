@@ -22,7 +22,7 @@ d = 0.05;
 c = 340;
 
 f = (0:1:N/2+1-1)*fs/N;
-f(1) = (1e-15)*fs/N;
+f(1) = (1e-14)*fs/N;
 
 Nele = element_num;
 
@@ -64,7 +64,7 @@ for  j=1:length(theta)
                 /(w0'*w0);       
             
     % MVDR soulution
-    Fvv_k = (squeeze(Fvv(k,:,:))+1e-15*eye(Nele));
+    Fvv_k = (squeeze(Fvv(k,:,:))+1e-14*eye(Nele));
     H(:,k) =    Fvv_k\w0 ...
                  ./(w0'/Fvv_k*w0);
 

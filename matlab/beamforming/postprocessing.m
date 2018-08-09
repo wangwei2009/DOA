@@ -22,8 +22,10 @@ frameLength = 256;
 % angle = [-31.9500;-45.7377];
 angle = angle*pi/180;
 d = 0.0457;
-[ DS0, x1] = DelaySumURA(x,fs,N,frameLength,inc,d,angle);
-x = real(x1);
+
+% [ DS0, x1] = DelaySumURA(x,fs,N,frameLength,inc,d,angle);
+% x = real(x1);
+
 % DS0 = sum(x,2)/Nele;
 % x = x;
 % compute input SNR
@@ -52,7 +54,7 @@ t = 1;
 
 %the distance between two adjacent microphone,XMOS microphone array board
 %was used
-r = 0.042; 
+r = 0.0457; 
 
 % the distance between two microphone
 dij = [r,sqrt(2)*r,r,...
@@ -77,7 +79,7 @@ fft_len = frameLength;
 inc = 64;
 nchs = Nele;
 x0 = enframe(x(:, 1), rectwin(frame_len), inc,'z');
-DS = enframe(DS0, window, inc,'z')';
+DS = enframe(y, window, inc,'z')';
 DS_FFT = fft(DS);
 frameNum = size(x0, 1);
 X = zeros(nchs,fft_len,size(x0, 1)); 
@@ -99,7 +101,7 @@ Pssnn = squeeze(Pssnn);
 for i = 1:Nele-1
     for j = i+1:Nele
         Pxij(t,:,:) = cpsd(squeeze(X(i,:, :)),squeeze(X(j,:, :)),hanning(128),64);
-        T = sin(2*pi*f*dij(t)*2/c)./(2*pi*f*dij(t)*2/c);T(1) = 0.999;%T(2) = 0.996;
+        T = sin(2*pi*f*dij(t)*2.5/c)./(2*pi*f*dij(t)*2.5/c);T(1) = 0.999;%T(2) = 0.996;
         T = repmat(T',1,size(x0, 1));
         Pss_e(t,:,:) = (real(squeeze(Pxij(t,:,:))) - 0.5*real(T).*(squeeze(Pxii(i,:,:))+squeeze(Pxii(j,:,:))))...
                          ./...

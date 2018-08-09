@@ -43,7 +43,7 @@ for k = 1:N/2+1
 
         % MVDR soulution
 %         Fvvk = diag(ones(1,Nele));%squeeze(Fvv(k,:,:));
-        Fvv_k = (squeeze(Fvv(k,:,:))+1e-12*eye(Nele));
+        Fvv_k = (squeeze(Fvv(k,:,:))+1e-14*eye(Nele));
         if(1)%k~=31&&k~=20&&k~=16)
         H(:,k) =    Fvv_k\d ...
                  ./(d'/Fvv_k*d);
@@ -60,16 +60,16 @@ for i = 1:inc:length(x(:,1))-frameLength
 %     d(33,:) = 1;
     d = fft(x(i:i+frameLength-1,:).*hamming(frameLength));
 %     x_fft = dot(H.',d(1:129,:),2);
-    x_fft = H.'.*d(1:129,:);
+    x_fft = H.'.*d(1:N/2+1,:);
     yf = sum(x_fft,2);
-    Cf = [yf;conj(flipud(yf(2:128)))];
+    Cf = [yf;conj(flipud(yf(2:N/2)))];
     
     % 恢复延时累加的信号
     yds(i:i+frameLength-1) = yds(i:i+frameLength-1)+(ifft(Cf));
     
     
     % 恢复各路对齐后的信号
-    xf  = [x_fft;conj(flipud(x_fft(2:128,:)))];
+    xf  = [x_fft;conj(flipud(x_fft(2:N/2,:)))];
     x1(i:i+frameLength-1,:) = x1(i:i+frameLength-1,:)+(ifft(xf));
 end
 DS = real(yds);  

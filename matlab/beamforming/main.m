@@ -40,16 +40,17 @@ t = 0;
 % figure,plot(0:step:360-step,P/max(P))
 % ang = (index)*step
 
-ang = 319;
+ang = 314;
 
-% [ DS, x1] = DelaySumURA(signal,fs,1024,1024,512,d,ang/180*pi);
-
+[ DS0, x1] = DelaySumURA(signal,fs,1024,1024,512,d,ang/180*pi);
+% DS = filter(HP_Num,1,DS0);
+% audiowrite('DS0.wav',real(DS0),fs)
 %% diffuse noise field MSC
-N = 256;
+N = 512;
 
-f = (1:129)*fs/N;
+f = (1:N/2+1)*fs/N;
 % f(1) = 1e-8;
-Fvv = zeros(129,M,M);
+Fvv = zeros(N/2+1,M,M);
 for i = 1:M
     for j = 1:M   
         if i == j
@@ -64,16 +65,16 @@ for i = 1:M
         end
     end
 end
+signal0 = filter(HP_Num,1,signal);
+[ super1, x1,~,DI] = superdirectiveMVDR(signal0,fs,N,N,N/2,d,316/180*pi,Fvv);
 
-[ DS, x1,~,DI] = superdirectiveMVDR(signal,fs,256,256,128,d,ang/180*pi,Fvv);
-
-% audiowrite('super3.wav',DS,fs)
+audiowrite('super8.wav',super1,fs)
 
 % audiowrite('DS7.wav',real(DS),fs)
 % audiowrite('signal1.wav',signal(:,1),fs)
 
-% [ z ] = postprocessing(signal,0,fs,(index)*step);
-% audiowrite('z1.wav',z,fs)
+[ z ] = postprocessing(x1,super1,fs,ang);
+audiowrite('z4.wav',z,fs)
 
 
 
