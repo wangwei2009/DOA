@@ -17,24 +17,24 @@ k = 64;
 y1 = zeros(128,length(theta));
 omega = zeros(1,128);
 fs = 8000;
-N = 256;
+N = 512;
 d = 0.05;
 c = 340;
 
-f = (0:1:129-1)*fs/N;
-f(1) = 1e-8;
+f = (0:1:N/2+1-1)*fs/N;
+f(1) = (1e-15)*fs/N;
 
 Nele = element_num;
 
 %% diffuse noise field MSC
-Fvv = zeros(129,Nele,Nele);
+Fvv = zeros(N/2+1,Nele,Nele);
 for i = 1:Nele
     for j = 1:Nele   
         if i == j
             Fvv(:,i,j) = ones(1,N/2+1);
         else
             dij = abs(i-j)*d;
-            Fvv(:,i,j) = sin(2*pi*f*dij*1/c)./(2*pi*f*dij*1/c);%T(1) = 0.999;%T(2) = 0.996;
+            Fvv(:,i,j) = sin(2*pi*f*dij*1.01/c)./(2*pi*f*dij*1.01/c);%T(1) = 0.999;%T(2) = 0.996;
 %             Fvv(1,i,j) = 0.9999;
 %             Fvv(2,i,j) = 0.9999;
         end
@@ -50,8 +50,8 @@ DI_dsb = zeros(N/2+1,1);  % DS directive factor
 WGN_sdb = zeros(N/2+1,1);  % superdirective directive factor
 WGN_dsb = zeros(N/2+1,1);  % DS directive factor
 
-y2 = zeros(128,length(theta));
-for k = 2:129
+y2 = zeros(N/2,length(theta));
+for k = 1:N/2+1
 % for k = 32:32
 for  j=1:length(theta)
     omega(k) = 2*pi*(k-1)*fs/N;
@@ -64,7 +64,7 @@ for  j=1:length(theta)
                 /(w0'*w0);       
             
     % MVDR soulution
-    Fvv_k = (squeeze(Fvv(k,:,:))+1e-12*eye(Nele));
+    Fvv_k = (squeeze(Fvv(k,:,:))+1e-15*eye(Nele));
     H(:,k) =    Fvv_k\w0 ...
                  ./(w0'/Fvv_k*w0);
 
@@ -83,16 +83,16 @@ plot(theta*180/pi,pow2db(abs(y2(32,:))/max(max(abs(y2(32,:)))))),grid on
 ylim([-40 0]);
 
 
-figure,mesh(theta*180/pi,(0:1:129-1)*fs/N,pow2db(abs(y1)/max(max(abs(y1)))))
+figure,mesh(theta*180/pi,(0:1:N/2+1-1)*fs/N,pow2db(abs(y1)/max(max(abs(y1)))))
 zlim([-40 0]);
-figure,mesh(theta*180/pi,(0:1:129-1)*fs/N,pow2db(abs(y2)/max(max(abs(y2)))))
+figure,mesh(theta*180/pi,(0:1:N/2+1-1)*fs/N,pow2db(abs(y2)/max(max(abs(y2)))))
 zlim([-40 0]);
 
 figure,plot(f,pow2db(abs(DI_dsb))),ylim([0 15]),grid on
 hold on,plot(f,pow2db(abs(DI_sdb))),ylim([0 15]),grid on
 legend('delaysum','superdirective'),title('Directivity Index')
 
-figure,plot(f,pow2db(WGN_dsb))
+figure,plot(f,pow2db(WGN_dsb)),grid on
 hold on,plot(f,pow2db(WGN_sdb))
 legend('delaysum','superdirective'),title('WGN')
 
