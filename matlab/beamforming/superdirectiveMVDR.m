@@ -25,6 +25,7 @@ H = ones(N/2+1,Nele)';
 
 theta = 90*pi/180; %固定一个俯仰角
 gamma = [0 90 180 270]*pi/180;%麦克风位置
+gamma = [30 90 150 210 270 330]*pi/180;%麦克风位置
 tao = r*sin(theta)*cos(angle(1)-gamma)/c;     %方位角 0 < angle <360
 yds = zeros(length(x(:,1)),1);
 x1 = zeros(size(x));
@@ -32,7 +33,7 @@ DI = zeros(N/2+1,1);
 
 for k = 1:N/2+1
 %         inv_Fvv = inv(squeeze(Fvv(k,:,:)));
-        omega(k) = 2*pi*(k-1)*fs/N;    
+        omega(k) = 2*pi*k*fs/N;    
         
         % 方向向量
         d = exp(-1j*omega(k)*tao');

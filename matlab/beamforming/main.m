@@ -7,7 +7,7 @@
 c = 340.0;
 
 % XMOS circular microphone array radius
-d = 0.0457;
+d = 0.0419;
 %%
 % more test audio file in ../../TestAudio/ folder
 path = '../../TestAudio/respeaker/mic1-4_2/';
@@ -16,6 +16,17 @@ s5 = audioread([path,'“ÙπÏ-3.wav']);
 s4 = audioread([path,'“ÙπÏ-4.wav']);
 s2 = audioread([path,'“ÙπÏ-5.wav']);
 signal = [s1,s5,s4,s2];
+M = size(signal,2);
+
+% more test audio file in ../../TestAudio/ folder
+path = '../../TestAudio/meetingroom_MIC4/';
+[s1,fs] = audioread([path,'“ÙπÏ-2.wav']);
+s2 = audioread([path,'“ÙπÏ-3.wav']);
+s3 = audioread([path,'“ÙπÏ-4.wav']);
+s4 = audioread([path,'“ÙπÏ-5.wav']);
+s5 = audioread([path,'“ÙπÏ-6.wav']);
+s6 = audioread([path,'“ÙπÏ-7.wav']);
+signal = [s1,s2,s3,s4,s5,s6];
 M = size(signal,2);
 %%
 t = 0;
@@ -40,11 +51,11 @@ t = 0;
 % figure,plot(0:step:360-step,P/max(P))
 % ang = (index)*step
 
-ang = 314;
+ang = 210;
 
 [ DS0, x1] = DelaySumURA(signal,fs,1024,1024,512,d,ang/180*pi);
 % DS = filter(HP_Num,1,DS0);
-% audiowrite('DS0.wav',real(DS0),fs)
+% audiowrite('xmos-DS0.wav',real(DS0),fs)
 %% diffuse noise field MSC
 N = 512;
 
@@ -65,16 +76,16 @@ for i = 1:M
         end
     end
 end
-signal0 = filter(HP_Num,1,signal);
-[ super1, x1,~,DI] = superdirectiveMVDR(signal0,fs,N,N,N/2,d,316/180*pi,Fvv);
+% signal0 = filter(HP_Num,1,signal);
+[ super1, x1,~,DI] = superdirectiveMVDR(signal,fs,N,N,N/2,d,ang/180*pi,Fvv);
 
-audiowrite('super8.wav',super1,fs)
+audiowrite('xmos-super2.wav',super1,fs)
 
 % audiowrite('DS7.wav',real(DS),fs)
 % audiowrite('signal1.wav',signal(:,1),fs)
 
-[ z ] = postprocessing(x1,super1,fs,ang);
-audiowrite('z4.wav',z,fs)
+% [ z ] = postprocessing(x1,super1,fs,ang);
+% audiowrite('z4.wav',z,fs)
 
 
 
