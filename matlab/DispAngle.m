@@ -71,12 +71,12 @@ global dir;
 dir = 1;
 global fs;
 buffer_size = 4000;
-fs = 8000;
+fs = 16000;
 global deviceReader;
-deviceReader = audioDeviceReader('NumChannels',6,'SampleRate',fs,'SamplesPerFrame',buffer_size);
+deviceReader = audioDeviceReader('NumChannels',8,'SampleRate',fs,'SamplesPerFrame',buffer_size);
 devices = getAudioDevices(deviceReader)
 SoundCardNum = input('please select XMOS sound card number:');
-deviceReader = audioDeviceReader('NumChannels',6,'SampleRate',fs,'SamplesPerFrame',buffer_size,'Device',devices{SoundCardNum});
+deviceReader = audioDeviceReader('NumChannels',8,'SampleRate',fs,'SamplesPerFrame',buffer_size,'Device',devices{SoundCardNum});
 
 setup(deviceReader);
 global deviceWriter;
@@ -148,7 +148,7 @@ last_output = zeros(overlap,1);
 while start
     
         acquiredAudio = deviceReader();
-    x = [last_acquiredAudio(:,[2,3,4,5]);acquiredAudio(:,[2,3,4,5])];
+    x = [last_acquiredAudio(:,[2,3,4,5,6,7]);acquiredAudio(:,[2,3,4,5,6,7])];
 %     size(acquiredAudio)
 %     y = DMA(x);
 %     playData = [last_output;y(1:end-overlap)];
@@ -164,6 +164,9 @@ while start
     step = 5;
 
     P = zeros(1,length(0:step:360-step));
+    
+    
+
     for i = 0:step:360-step
         % Delay-and-sum beamforming
         [ DS, x1] = DelaySumURA(x,fs,256,256,128,d,i/180*pi);
