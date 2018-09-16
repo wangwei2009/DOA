@@ -67,3 +67,8 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+*VC*
+c/SRP/SRP/Debug*
+c/SRP/Debug
+*log*
