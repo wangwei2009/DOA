@@ -78,10 +78,10 @@ for i = 1:M
         end
     end
 end
-% signal0 = filter(HP_Num,1,signal);
-[ super1, x1,~,DI] = superdirectiveMVDR(signal,fs,N,N,N/2,d,ang/180*pi,Fvv);
-
-% audiowrite([path,'xmos-super10.wav'],super1,fs)
+[b,a] = sos2tf(SOS);
+signal0 = filter(b,a,signal);
+[ super1, x1,~,DI] = superdirectiveMVDR(signal0,fs,N,N,N/2,d,ang/180*pi,Fvv);
+% audiowrite([path,'xmos-super12.wav'],super1,fs)
 
 % audiowrite('DS7.wav',real(DS),fs)
 % audiowrite('signal1.wav',signal(:,1),fs)
