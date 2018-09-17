@@ -1,0 +1,3 @@
+/home/wangwei/QtProjects/DOA/c/SRP/SRP/CMakeFiles/edit_cache.dir
+/home/wangwei/QtProjects/DOA/c/SRP/SRP/CMakeFiles/rebuild_cache.dir
+/home/wangwei/QtProjects/DOA/c/SRP/SRP/CMakeFiles/DOA_SRP.dir

@@ -1,0 +1,1 @@
+/usr/bin/gcc  -Wall -fPIC -s -D__platform_ISVP__ -D__OpenPlatform___ -Wl,-Bsymbolic -lm -lpthread -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS -g   CMakeFiles/DOA_SRP.dir/main.c.o CMakeFiles/DOA_SRP.dir/wave.c.o CMakeFiles/DOA_SRP.dir/DelaySum.c.o  -o bin/DOA_SRP  -Llib/static -rdynamic 

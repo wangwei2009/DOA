@@ -1,0 +1,1 @@
+/usr/bin/gcc  -Wall -fPIC -s -D__platform_ISVP__ -D__OpenPlatform___ -Wl,-Bsymbolic -lm -lpthread -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS -g   CMakeFiles/VA_MIPS_TEST.dir/main.c.o CMakeFiles/VA_MIPS_TEST.dir/wave.c.o  -o bin/VA_MIPS_TEST  -Llib/static -rdynamic 

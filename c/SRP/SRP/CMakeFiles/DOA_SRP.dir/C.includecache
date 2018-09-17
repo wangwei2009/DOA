@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/wangwei/QtProjects/DOA/c/SRP/SRP/DelaySum.c
+
+/home/wangwei/QtProjects/DOA/c/SRP/SRP/DelaySum.h
+
+/home/wangwei/QtProjects/DOA/c/SRP/SRP/main.c
+stdio.h
+-
+stdlib.h
+-
+stdint.h
+-
+wave.h
+/home/wangwei/QtProjects/DOA/c/SRP/SRP/wave.h
+DelaySum.h
+/home/wangwei/QtProjects/DOA/c/SRP/SRP/DelaySum.h
+
+/home/wangwei/QtProjects/DOA/c/SRP/SRP/wave.c
+wave.h
+/home/wangwei/QtProjects/DOA/c/SRP/SRP/wave.h
+stdio.h
+-
+stdlib.h
+-
+stdint.h
+-
+
+/home/wangwei/QtProjects/DOA/c/SRP/SRP/wave.h
+stdio.h
+-
+stdlib.h
+-
+stdint.h
+-
+
