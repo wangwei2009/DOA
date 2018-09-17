@@ -3,6 +3,7 @@
 #include<stdint.h>
 #include"wave.h"
 #include"DelaySum.h"
+#include"win.h"
 int main()
 {
     Wav wav;
