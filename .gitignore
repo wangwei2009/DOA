@@ -72,3 +72,6 @@ dkms.conf
 c/SRP/SRP/Debug*
 c/SRP/Debug
 *log*
+
+*build*
+CMakeLists.txt.user

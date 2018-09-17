@@ -1,3 +1,6 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdint.h>
 typedef struct WAV_RIFF {
     /* chunk "riff" */
     char ChunkID[4];   /* "RIFF" */
@@ -28,7 +31,8 @@ typedef struct WAV_data {
     uint32_t Subchunk2Size; /* data size */
     /* sub-chunk-data */
 //    Data_block_t block;
-} Data_t;
+    //int8_t datapointer;
+} Data_info;
 
 //typedef struct WAV_data_block {
 //} Data_block_t;
@@ -36,6 +40,17 @@ typedef struct WAV_data {
 typedef struct WAV_fotmat {
    RIFF_t riff;
    FMT_t fmt;
-   Data_t data;
+   Data_info data;
+} Wav_info;
+
+
+typedef struct WAV {
+    Wav_info wav_info;
+    Data_info data_info;
+    int16_t *data;
+
 } Wav;
+
+
+void wavread(Wav *wav,const char * filename);
 
