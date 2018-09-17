@@ -18,6 +18,8 @@
 extern "C" {
 #endif
 
+#define N_FFT 512
+#define WinLen 512
 
 
 #ifdef  __cplusplus
