@@ -39,10 +39,10 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /usr/local/bin/cmake
+CMAKE_COMMAND = /usr/bin/cmake
 
 # The command to remove a file.
-RM = /usr/local/bin/cmake -E remove -f
+RM = /usr/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
@@ -58,8 +58,8 @@ CMAKE_BINARY_DIR = /home/wangwei/QtProjects/DOA/c/SRP/SRP
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/local/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/usr/bin/cmake-gui -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -70,7 +70,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -150,6 +150,60 @@ DelaySum.c.s:
 	$(MAKE) -f CMakeFiles/DOA_SRP.dir/build.make CMakeFiles/DOA_SRP.dir/DelaySum.c.s
 .PHONY : DelaySum.c.s
 
+kiss_fft.o: kiss_fft.c.o
+
+.PHONY : kiss_fft.o
+
+# target to build an object file
+kiss_fft.c.o:
+	$(MAKE) -f CMakeFiles/DOA_SRP.dir/build.make CMakeFiles/DOA_SRP.dir/kiss_fft.c.o
+.PHONY : kiss_fft.c.o
+
+kiss_fft.i: kiss_fft.c.i
+
+.PHONY : kiss_fft.i
+
+# target to preprocess a source file
+kiss_fft.c.i:
+	$(MAKE) -f CMakeFiles/DOA_SRP.dir/build.make CMakeFiles/DOA_SRP.dir/kiss_fft.c.i
+.PHONY : kiss_fft.c.i
+
+kiss_fft.s: kiss_fft.c.s
+
+.PHONY : kiss_fft.s
+
+# target to generate assembly for a file
+kiss_fft.c.s:
+	$(MAKE) -f CMakeFiles/DOA_SRP.dir/build.make CMakeFiles/DOA_SRP.dir/kiss_fft.c.s
+.PHONY : kiss_fft.c.s
+
+kiss_fftr.o: kiss_fftr.c.o
+
+.PHONY : kiss_fftr.o
+
+# target to build an object file
+kiss_fftr.c.o:
+	$(MAKE) -f CMakeFiles/DOA_SRP.dir/build.make CMakeFiles/DOA_SRP.dir/kiss_fftr.c.o
+.PHONY : kiss_fftr.c.o
+
+kiss_fftr.i: kiss_fftr.c.i
+
+.PHONY : kiss_fftr.i
+
+# target to preprocess a source file
+kiss_fftr.c.i:
+	$(MAKE) -f CMakeFiles/DOA_SRP.dir/build.make CMakeFiles/DOA_SRP.dir/kiss_fftr.c.i
+.PHONY : kiss_fftr.c.i
+
+kiss_fftr.s: kiss_fftr.c.s
+
+.PHONY : kiss_fftr.s
+
+# target to generate assembly for a file
+kiss_fftr.c.s:
+	$(MAKE) -f CMakeFiles/DOA_SRP.dir/build.make CMakeFiles/DOA_SRP.dir/kiss_fftr.c.s
+.PHONY : kiss_fftr.c.s
+
 main.o: main.c.o
 
 .PHONY : main.o
@@ -216,6 +270,12 @@ help:
 	@echo "... DelaySum.o"
 	@echo "... DelaySum.i"
 	@echo "... DelaySum.s"
+	@echo "... kiss_fft.o"
+	@echo "... kiss_fft.i"
+	@echo "... kiss_fft.s"
+	@echo "... kiss_fftr.o"
+	@echo "... kiss_fftr.i"
+	@echo "... kiss_fftr.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

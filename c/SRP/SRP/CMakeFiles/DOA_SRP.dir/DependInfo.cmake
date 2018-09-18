@@ -5,6 +5,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
   "/home/wangwei/QtProjects/DOA/c/SRP/SRP/DelaySum.c" "/home/wangwei/QtProjects/DOA/c/SRP/SRP/CMakeFiles/DOA_SRP.dir/DelaySum.c.o"
+  "/home/wangwei/QtProjects/DOA/c/SRP/SRP/kiss_fft.c" "/home/wangwei/QtProjects/DOA/c/SRP/SRP/CMakeFiles/DOA_SRP.dir/kiss_fft.c.o"
+  "/home/wangwei/QtProjects/DOA/c/SRP/SRP/kiss_fftr.c" "/home/wangwei/QtProjects/DOA/c/SRP/SRP/CMakeFiles/DOA_SRP.dir/kiss_fftr.c.o"
   "/home/wangwei/QtProjects/DOA/c/SRP/SRP/main.c" "/home/wangwei/QtProjects/DOA/c/SRP/SRP/CMakeFiles/DOA_SRP.dir/main.c.o"
   "/home/wangwei/QtProjects/DOA/c/SRP/SRP/wave.c" "/home/wangwei/QtProjects/DOA/c/SRP/SRP/CMakeFiles/DOA_SRP.dir/wave.c.o"
   )
@@ -13,6 +15,7 @@ set(CMAKE_C_COMPILER_ID "GNU")
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
   "."
+  "../kiss_fft130"
   "include"
   "include/face_detect"
   "include/opencv"

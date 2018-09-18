@@ -45,8 +45,15 @@ typedef struct WAV_fotmat {
 
 
 typedef struct WAV {
+    // RAW info
     Wav_info wav_info;
-    Data_info data_info;
+
+    //main info
+    uint16_t fs;
+    uint16_t ch;
+    uint32_t samples_per_ch;
+
+    //data pointer
     int16_t *data;
 
 } Wav;

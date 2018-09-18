@@ -3,22 +3,26 @@ PROJECT(DOA)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 #****************************This is Compile Flag****************************
- if(DEBUG)        
- message( STATUS "==============================debug==============================" )        
+ if(DEBUG)
+ message( STATUS "==============================debug==============================" )
  ADD_DEFINITIONS(-g)
  ADD_DEFINITIONS(-D AVX_DEBUG_LEVEL=AVX_DEBUG_DEBUG)
-else(DEBUG)   
- message( STATUS "==============================release==============================" )         
+ SET(CMAKE_C_FLAGS "-lm")
+ SET(CMAKE_CXX_FLAGS "-lm")
+else(DEBUG)
+ message( STATUS "==============================release==============================" )
  ADD_DEFINITIONS(-O2)
  ADD_DEFINITIONS(-D AVX_DEBUG_LEVEL=AVX_DEBUG_INFO)
+ SET(CMAKE_C_FLAGS "-lm")
+ SET(CMAKE_CXX_FLAGS "-lm")
  endif()
 
 ADD_DEFINITIONS("-Wall")
 ADD_DEFINITIONS("-fPIC")
 ADD_DEFINITIONS("-Wl,-Bsymbolic -lm")
 #ADD_DEFINITIONS("-std=c++11")
-SET(CMAKE_CXX_FLAGS "-Wall -fPIC -s -D__platform_ISVP__ -D__OpenPlatform___  -std=c++11 -Wl,-Bsymbolic -lm -lpthread -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS")
-SET(CMAKE_C_FLAGS "-Wall -fPIC -s -D__platform_ISVP__ -D__OpenPlatform___ -Wl,-Bsymbolic -lm -lpthread -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS")
+SET(CMAKE_CXX_FLAGS "-Wall -fPIC -s  -std=c++11 -Wl,-Bsymbolic -lm -lpthread -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS")
+SET(CMAKE_C_FLAGS "-Wall -fPIC -s -Wl,-Bsymbolic -lm -lpthread -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS")
 
 #****************************This is Compiling environment Flag****************************
 #SET(CMAKE_SYSTEM_NAME linux)
@@ -32,7 +36,7 @@ SET(CMAKE_C_FLAGS "-Wall -fPIC -s -D__platform_ISVP__ -D__OpenPlatform___ -Wl,-B
 
 #****************************This is Include File/Directories****************************
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/)
-
+INCLUDE_DIRECTORIES(../kiss_fft130/)
 INCLUDE_DIRECTORIES(include)
 INCLUDE_DIRECTORIES(include/face_detect)
 INCLUDE_DIRECTORIES(include/opencv)
@@ -83,8 +87,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 # #****************************This is Output Library****************************
-#ADD_LIBRARY(VA_Lib SHARED ${DIR_SRCS} ObjectIntrusion_all.cpp)
+#ADD_LIBRARY(kiss_fft SHARED ${DIR_SRCS} kiss_fft.c)
 #TARGET_LINK_LIBRARIES(VA_Lib libopencv_imgproc.a libopencv_core.a libopencv_highgui.a VA_Lib IlmImf libjasper libjpeg libpng libtiff zlib)
 
-add_executable(DOA_SRP main.c wave.c DelaySum.c)
-#TARGET_LINK_LIBRARIES(VA_MIPS_TEST libopencv_imgproc.a libopencv_core.a libopencv_highgui.a VA_Lib IlmImf libjasper libjpeg libpng libtiff zlib)
+add_executable(DOA_SRP main.c wave.c DelaySum.c kiss_fftr.c kiss_fft.c)
+TARGET_LINK_LIBRARIES(DOA_SRP m pthread)

@@ -1,15 +1,4 @@
-/*-------------------------------------------------------------------*/
-/*  Copyright(C) 2003-2012 by OMRON Corporation                      */
-/*  All Rights Reserved.                                             */
-/*                                                                   */
-/*   This source code is the Confidential and Proprietary Property   */
-/*   of OMRON Corporation.  Any unauthorized use, reproduction or    */
-/*   transfer of this software is strictly prohibited.               */
-/*                                                                   */
-/*-------------------------------------------------------------------*/
-/* 
-    OKAO_SDK Library API
-*/
+
 #ifndef DELAYSUM_H__
 #define DELAYSUM_H__
 
@@ -18,10 +7,24 @@
 extern "C" {
 #endif
 
-#define N_FFT 512
-#define WinLen 512
+#include<stdint.h>
+#include<math.h>
 
-	int16_t	DelaySumURA(int16_t *x, int16_t fs, int16_t N, int16_t frameLength, int16_t inc, int16_t r, int16_t angle);
+#define Nele 6        //Number of array elements
+#define N_FFT 512     //FFT point
+#define WinLen 512
+#define pi 3.1415926
+
+typedef struct
+{
+    double real;
+    double imag;
+}complex;
+
+
+    int16_t	DelaySumURA(int16_t **x, int16_t fs,uint32_t DataLen, int16_t N, int16_t frameLength, int16_t inc, float r, int16_t angle);
+    int8_t Angle2Radian(float *gamma);
+    float * CalculateTau(float *gamma,float angle);
 
 
 #ifdef  __cplusplus

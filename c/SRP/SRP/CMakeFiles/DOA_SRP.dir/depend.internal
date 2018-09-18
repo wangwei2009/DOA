@@ -3,8 +3,15 @@
 
 CMakeFiles/DOA_SRP.dir/DelaySum.c.o
  /home/wangwei/QtProjects/DOA/c/SRP/SRP/DelaySum.c
+ /home/wangwei/QtProjects/DOA/c/SRP/SRP/DelaySum.h
+ /home/wangwei/QtProjects/DOA/c/SRP/SRP/hamming.h
+CMakeFiles/DOA_SRP.dir/kiss_fft.c.o
+ ../kiss_fft130/_kiss_fft_guts.h
+ ../kiss_fft130/kiss_fft.h
+ /home/wangwei/QtProjects/DOA/c/SRP/SRP/kiss_fft.c
 CMakeFiles/DOA_SRP.dir/main.c.o
  /home/wangwei/QtProjects/DOA/c/SRP/SRP/DelaySum.h
+ /home/wangwei/QtProjects/DOA/c/SRP/SRP/kiss_fft.h
  /home/wangwei/QtProjects/DOA/c/SRP/SRP/main.c
  /home/wangwei/QtProjects/DOA/c/SRP/SRP/wave.h
 CMakeFiles/DOA_SRP.dir/wave.c.o
