@@ -23,7 +23,7 @@ void wavread(Wav *wav,const char * filename)
     fmt = wav->wav_info.fmt;
     data = wav->wav_info.data;
 
-#ifdef SHOW_WAV
+#ifdef SHOW_WAV_INFO
     printf("ChunkID \t%c%c%c%c\n", riff.ChunkID[0], riff.ChunkID[1], riff.ChunkID[2], riff.ChunkID[3]);
     printf("ChunkSize \t%d\n", riff.ChunkSize);
     printf("Format \t\t%c%c%c%c\n", riff.Format[0], riff.Format[1], riff.Format[2], riff.Format[3]);
@@ -49,9 +49,7 @@ void wavread(Wav *wav,const char * filename)
 
     printf("duration \t%d\n", data.Subchunk2Size / fmt.ByteRate);
 
-    fread(wav->data, 2, wav->samples_per_ch*wav->ch, fp);
-    for(int i = 0;i<10;i++)
-        printf("wavedata =  \t%f\n", wav->data[i]/32768.0);
+    
 #endif
 
 
@@ -62,6 +60,12 @@ void wavread(Wav *wav,const char * filename)
 
 
     wav->data= (int16_t *)malloc(wav->samples_per_ch*sizeof(int16_t));
+	fread(wav->data, 2, wav->samples_per_ch*wav->ch, fp);
+
+	wav->dataf = (float *)malloc(wav->samples_per_ch * sizeof(float));
+
+	for (int i = 0; i < wav->samples_per_ch; i++)
+		wav->dataf[i] = wav->data[i] / 32768.0;
 
 
 

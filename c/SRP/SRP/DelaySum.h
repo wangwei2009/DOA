@@ -10,7 +10,7 @@ extern "C" {
 #include<stdint.h>
 #include<math.h>
 
-#define Nele 6        //Number of array elements
+#define Nele 4        //Number of array elements
 #define N_FFT 512     //FFT point
 #define WinLen 512
 #define pi 3.1415926
@@ -19,10 +19,10 @@ typedef struct
 {
     double real;
     double imag;
-}complex;
+}Complex;
 
 
-    int16_t	DelaySumURA(int16_t **x, int16_t fs,uint32_t DataLen, int16_t N, int16_t frameLength, int16_t inc, float r, int16_t angle);
+    int16_t	DelaySumURA(float **x, float * yout,uint16_t fs,uint32_t DataLen,int16_t N, int16_t frameLength, int16_t inc, float r, int16_t angle);
     int8_t Angle2Radian(float *gamma);
     float * CalculateTau(float *gamma,float angle);
 

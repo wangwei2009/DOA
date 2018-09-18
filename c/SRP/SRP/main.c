@@ -11,7 +11,7 @@ int main()
 
     kiss_fft_cpx cx_in[8];
     kiss_fft_cpx cx_out[8];
-    for(int i=0;i<9;i++)
+    for(int i=0;i<8;i++)
     {
         cx_in[i].i=0;
         cx_in[i].r=i*i+i+3;
@@ -23,30 +23,31 @@ int main()
     {
         printf("cx_out[%d]=%f + %f \n", i,cx_out[i].r,cx_out[i].i);
     }
+	free(cfg);
 
     Wav wav;
 
-    const char *mic1 = "../../../../TestAudio/respeaker/mic1-4/音轨-2.wav";
-    const char *mic2 = "../../../../TestAudio/respeaker/mic1-4/音轨-3.wav";
-    const char *mic3 = "../../../../TestAudio/respeaker/mic1-4/音轨-4.wav";
-    const char *mic4 = "../../../../TestAudio/respeaker/mic1-4/音轨-5.wav";
+    const char *mic1 = "../../../TestAudio/respeaker/mic1-4/2.wav";
+    const char *mic2 = "../../../TestAudio/respeaker/mic1-4/3.wav";
+    const char *mic3 = "../../../TestAudio/respeaker/mic1-4/4.wav";
+    const char *mic4 = "../../../TestAudio/respeaker/mic1-4/5.wav";
 
 
-    int16_t *data[Nele];
+    float *data[Nele];
 
     wavread(&wav,mic1);
-    data[0] = wav.data;
+    data[0] = wav.dataf;
 
     wavread(&wav,mic2);
-    data[1] = wav.data;
+    data[1] = wav.dataf;
 
     wavread(&wav,mic3);
-    data[2] = wav.data;
+    data[2] = wav.dataf;
 
     wavread(&wav,mic4);
-    data[3] = wav.data;
+    data[3] = wav.dataf;
     printf("fs= \t%d\n", wav.wav_info.fmt.SampleRate);
-    //printf("L= \t%d\n", wav.data_info.Subchunk2Size);
+    printf("L= \t%d\n", wav.samples_per_ch);
 
     float r = 0.0457;
 
@@ -54,7 +55,22 @@ int main()
 
     uint32_t DataLen = wav.samples_per_ch;
 
-    DelaySumURA(data, fs, DataLen,512, 512, 256, r, 30);
+	float *yout = (float *)malloc(DataLen * sizeof(float));
+
+	float E[360];
+
+	for (uint16_t i = 0; i < 360; i++)
+	{
+		DelaySumURA(data, yout, fs, DataLen, N_FFT, WinLen, 256, r, i);
+		for (uint16_t j = 0; j < DataLen; j++)
+		{
+			E[j] = E[j] + yout[j] * yout[j];
+		}
+	}
+
+    //DelaySumURA(data, yout,fs, DataLen,N_FFT, WinLen, 256, r, 30);
+
+	free(yout);
 
 
 

@@ -55,6 +55,7 @@ typedef struct WAV {
 
     //data pointer
     int16_t *data;
+	float *dataf;
 
 } Wav;
 

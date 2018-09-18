@@ -1,3 +1,4 @@
+
 #include "DelaySum.h"
 #include<stdint.h>
 #include<math.h>
@@ -5,107 +6,152 @@
 #include"hamming.h"
 #include "kiss_fft.h"
 
-int16_t DelaySumURA(int16_t * * x, int16_t fs, uint32_t DataLen, int16_t N, int16_t frameLength, int16_t inc, float r, int16_t angle)
+int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int16_t N, int16_t frameLength, int16_t inc, float r, int16_t angle)
 {
 
     int16_t half_bin = (N_FFT/2+1);
 
-    // malloc normalized frequency bin
+    /* malloc normalized frequency bin */
     double *omega = (double *)malloc(half_bin*sizeof(double));
 
 
-    // malloc frequency bin weights
-    complex **H = (complex **)malloc(half_bin*sizeof(complex *));
+    /* malloc frequency bin weights */
+    Complex **H = (Complex **)malloc(half_bin*sizeof(Complex *));
     for(int16_t i=0;i<half_bin;i++)
-        H[i] = (complex *)malloc(Nele*sizeof(complex));
+        H[i] = (Complex *)malloc(Nele*sizeof(Complex));
 
-    // malloc frequency bin weights
-    complex **xk = (complex **)malloc(half_bin*sizeof(complex *));
+    /* malloc frequency bin */
+    Complex **xk = (Complex **)malloc(half_bin*sizeof(Complex *));
     for(int16_t i=0;i<half_bin;i++)
-        xk[i] = (complex *)malloc(Nele*sizeof(complex));
+        xk[i] = (Complex *)malloc(Nele*sizeof(Complex));
 
 
-    // gamma = [0 90 180 270]*pi/180;//麦克风位置
-    float gamma[Nele] = {30,90,150,210,270,330};//麦克风位置
+
+	float gamma[Nele] = { 0,90,180,270};//麦克风位置
+    //float gamma[Nele] = {30,90,150,210,270,330};//麦克风位置
 
     /* calculate time delay tau*/
     float *tao = CalculateTau(gamma,angle);
 
     /*Euler's formula e^ix = cos(x)+i*sin(x)*/
-    for(int16_t k=16;k<5000*N/fs;k++)
+    for(int16_t k=0;k<half_bin;k++)
     {
-        //Normalized frequency bin
-        omega[k]=2*pi*(k-1)*fs/N;
+        /* Normalized frequency bin */
+        omega[k]=2*pi*k*fs/N;
 
-        //steering vector
+        /* steering vector */
         for(int8_t i=0;i<Nele;i++)
         {
-            double x = omega[k]*tao[i];
-//           //H[k][i] = exp(-1*x);
-            H[k][i].real = cos(x);
-            H[k][i].imag = -1*sin(x);
+			if (k <= 16 || k > 5000 * N / fs)
+			{
+				H[k][i].real = 0;
+				H[k][i].imag = 0;
+			}
+			else
+			{
+				double x = omega[k] * tao[i];
+				H[k][i].real = cos(x);
+				H[k][i].imag = -1 * sin(x);
+			}
+
         }
     }
-
-    //float yds = zeros(length(x(:,1)),1);
-    //float x1 = zeros(size(x));
-
 
     double *frame_bin ;//= (double *)malloc(frameLength*sizeof(double));
 
     kiss_fft_cpx cx_in[WinLen];
     kiss_fft_cpx cx_out[WinLen];
-    kiss_fft_cfg cfg = kiss_fft_alloc( N_FFT ,0 ,NULL,NULL );
+	kiss_fft_cfg cfg = kiss_fft_alloc(N_FFT, 0, NULL, NULL);
 
 
-    for(int32_t i = 0;i<DataLen-WinLen;i=i+inc)
+    for(int32_t i = 0;i<DataLen-WinLen*2;i=i+inc)
     {
+
+		/* step 1: delay */
         for(uint8_t n = 0;n<Nele;n++)
         {
+			
             for(uint16_t l = i;l<WinLen+i;l++)
             {
-                cx_in[l-i].r=x[n][l];
+                cx_in[l-i].r=x[n][l]*win[l-i];
+				cx_in[l - i].i = 0;
             }
             kiss_fft( cfg , cx_in , cx_out );
+			for (uint16_t l = i; l<half_bin + i; l++)
+			{
+				if (l<=16)
+				{
+					xk[l - i][n].real = 0;
+					xk[l - i][n].imag = 0;
+				}
+				else
+				{
+					/*
+					complex multiply :
+					(a+bi)*(c+di)=(ac-bd)+(ad+bc)i
+					*/
+					xk[l - i][n].real = cx_out[l - i].r * H[l - i][n].real - cx_out[l - i].i * H[l - i][n].imag;
+					xk[l - i][n].imag = cx_out[l - i].r *H[l - i][n].imag + cx_out[l - i].i*H[l - i][n].real;
+				}
 
-        }
-        //frame_bin =
-
-//        d = fft(bsxfun(@times, x(i:i+frameLength-1,:),hamming(frameLength)));
-//    %     d = fft(x(i:i+frameLength-1,:).*hamming(frameLength)');
-//    %     x_fft = d(1:129,:).*H;%./abs(d(1:129,:));
-//        x_fft=bsxfun(@times, d(1:N/2+1,:),H);
-
-//        % phase transformed
-//        %x_fft = bsxfun(@rdivide, x_fft,abs(d(1:N/2+1,:)));
-//        yf = sum(x_fft,2);
-//        Cf = [yf;conj(flipud(yf(2:N/2)))];
-
-//        % 恢复延时累加的信号
-//        yds(i:i+frameLength-1) = yds(i:i+frameLength-1)+(ifft(Cf));
 
 
-//        % 恢复各路对齐后的信号
-//    %     xf  = [x_fft;conj(flipud(x_fft(2:N/2,:)))];
-//    %     x1(i:i+frameLength-1,:) = x1(i:i+frameLength-1,:)+(ifft(xf));
-//    end
+			}
+		}
+		/* step 2: sum */
+		for (uint16_t k = 0; k<half_bin; k++)
+		{
+			for (uint16_t n = 1; n < Nele; n++)
+			{
+				xk[k][0].real = xk[k][0].real + xk[k][n].real;
+				xk[k][0].imag = xk[k][0].imag + xk[k][n].imag;
+			}
+
+		}
+
+		/* now let's compensate the conjugate side */
+		for (uint16_t k = 0; k < N_FFT; k++)
+		{
+			if (k < half_bin)
+			{
+				cx_in[k].r = xk[k][0].real;
+				cx_in[k].i = xk[k][0].imag;
+			}
+			else
+			{
+				cx_in[k].r = xk[N_FFT-k][0].real;
+				cx_in[k].i = xk[N_FFT-k][0].imag;
+			}
+		}
+
+		/* inverse FFT */
+		cfg = kiss_fft_alloc(N_FFT, 1, NULL, NULL);
+		kiss_fft(cfg, cx_in, cx_out);
+
+		/* concatenate signal */
+		for (uint16_t j = i; j < WinLen; j++)
+		{
+			yout[j] = yout[j] + sqrt(cx_out[j - i].r*cx_out[j - i].r + cx_out[j - i].i*cx_out[j - i].i);
+
+		}
+
     }
 
 
-    //DS = yds/Nele;
+    for (int16_t i = 0; i < half_bin; i++)
+        free(H[i]);
+
+    free(H);
 
     for (int16_t i = 0; i < half_bin; i++)
-        free(H[i]);/*释放列*/
+        free(xk[i]);
 
-    free(H);/*释放行*/
-
-    for (int16_t i = 0; i < half_bin; i++)
-        free(xk[i]);/*释放列*/
-
-    free(xk);/*释放行*/
+    free(xk);
 
     free(omega);
 
+	
+	free(cfg);
 	return 0;
 }
 
@@ -125,7 +171,8 @@ float * CalculateTau(float *gamma,float angle)
 {
     int16_t c = 340;
     float r = 0.0457;
-    double theta = 90*pi/180; //固定一个俯仰角
+    double theta = 90*pi/180; 
+	angle = angle*pi / 180;
 
     Angle2Radian(gamma);
 
@@ -138,4 +185,4 @@ float * CalculateTau(float *gamma,float angle)
 
     return gamma;
 
-}
+}//

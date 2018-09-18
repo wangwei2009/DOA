@@ -1,6 +1,16 @@
-﻿  main.c
-g:\documents\matlab2017b\workspace\doa\c\srp\srp\win.h(2): warning C4305: “初始化”: 从“double”到“const float”截断
-  DelaySum.c
-  正在生成代码...
-  SRP.vcxproj -> G:\documents\matlab2017b\workspace\DOA\c\SRP\Debug\SRP.exe
-  SRP.vcxproj -> G:\documents\matlab2017b\workspace\DOA\c\SRP\Debug\SRP.pdb (Full PDB)
+﻿  DelaySum.c
+d:\wangwei\github\doa\c\srp\srp\delaysum.c : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+d:\wangwei\github\doa\c\srp\srp\hamming.h(2): warning C4305: “初始化”: 从“double”到“const float”截断
+d:\wangwei\github\doa\c\srp\srp\delaysum.c(67): warning C4018: “<”: 有符号/无符号不匹配
+d:\wangwei\github\doa\c\srp\srp\delaysum.c(117): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\wangwei\github\doa\c\srp\srp\delaysum.c(118): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\wangwei\github\doa\c\srp\srp\delaysum.c(122): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\wangwei\github\doa\c\srp\srp\delaysum.c(123): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\wangwei\github\doa\c\srp\srp\delaysum.c(134): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\wangwei\github\doa\c\srp\srp\delaysum.c(60): warning C4101: “frame_bin”: 未引用的局部变量
+d:\wangwei\github\doa\c\srp\srp\delaysum.c(163): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\wangwei\github\doa\c\srp\srp\delaysum.c(175): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\wangwei\github\doa\c\srp\srp\delaysum.c(183): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\wangwei\github\doa\c\srp\srp\delaysum.c(173): warning C4305: “初始化”: 从“double”到“float”截断
+  SRP.vcxproj -> D:\wangwei\Github\DOA\c\SRP\SRP\Debug\SRP.exe
+  SRP.vcxproj -> D:\wangwei\Github\DOA\c\SRP\SRP\Debug\SRP.pdb (Full PDB)
