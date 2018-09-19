@@ -5,23 +5,27 @@
 #include"DelaySum.h"
 #include "kiss_fftr.h"
 #include "kiss_fft.h"
+#include "kiss_fftr.h"
 int main()
 {
-    kiss_fft_cfg cfg = kiss_fft_alloc( 8 ,0 ,NULL,NULL );
+    kiss_fftr_cfg cfg = kiss_fftr_alloc( 8 ,1 ,0,0 );
 
-    kiss_fft_cpx cx_in[8];
-    kiss_fft_cpx cx_out[8];
-    for(int i=0;i<8;i++)
+
+	kiss_fft_cpx cx_in[5];
+	kiss_fft_scalar cx_out[8];
+
+    for(int i=0;i<5;i++)
     {
-        cx_in[i].i=0;
-        cx_in[i].r=i*i+i+3;
+        cx_in[i].i=-1*i;
+        cx_in[i].r=i*i*5.6+1.4*i+3;
         printf("cx_in[%d]=%f\n", i,cx_in[i].r);
     }
 
-    kiss_fft( cfg , cx_in , cx_out );
+    kiss_fftri( cfg , cx_in,cx_out);
     for(int i=0;i<8;i++)
     {
-        printf("cx_out[%d]=%f + %f \n", i,cx_out[i].r,cx_out[i].i);
+		printf("cx_out[%d]=%f\n", i, cx_out[i]);
+        //printf("cx_out[%d]=%f + %f \n", i,cx_out[i].r,cx_out[i].i);
     }
 	free(cfg);
 

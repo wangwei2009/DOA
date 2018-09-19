@@ -5,6 +5,7 @@
 #include<stdlib.h>
 #include"hamming.h"
 #include "kiss_fft.h"
+#include "kiss_fftr.h"
 
 int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int16_t N, int16_t frameLength, int16_t inc, float r, int16_t angle)
 {
@@ -42,9 +43,9 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
         /* steering vector */
         for(int8_t i=0;i<Nele;i++)
         {
-			if (k <= 16 || k > 5000 * N / fs)
+			if (k < 15 || k > 5000 * N / fs)
 			{
-				H[k][i].real = 0;
+				H[k][i].real = 1;
 				H[k][i].imag = 0;
 			}
 			else
@@ -79,22 +80,12 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
             kiss_fft( cfg , cx_in , cx_out );
 			for (uint16_t l = i; l<half_bin + i; l++)
 			{
-				if (l<=16)
-				{
-					xk[l - i][n].real = 0;
-					xk[l - i][n].imag = 0;
-				}
-				else
-				{
-					/*
-					complex multiply :
-					(a+bi)*(c+di)=(ac-bd)+(ad+bc)i
-					*/
-					xk[l - i][n].real = cx_out[l - i].r * H[l - i][n].real - cx_out[l - i].i * H[l - i][n].imag;
-					xk[l - i][n].imag = cx_out[l - i].r *H[l - i][n].imag + cx_out[l - i].i*H[l - i][n].real;
-				}
-
-
+				/*
+				complex multiply :
+				(a+bi)*(c+di)=(ac-bd)+(ad+bc)i
+				*/
+				xk[l - i][n].real = cx_out[l - i].r * H[l - i][n].real - cx_out[l - i].i * H[l - i][n].imag;
+				xk[l - i][n].imag = cx_out[l - i].r *H[l - i][n].imag + cx_out[l - i].i*H[l - i][n].real;
 
 			}
 		}
@@ -109,24 +100,51 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
 
 		}
 
-		/* now let's compensate the conjugate side */
-		for (uint16_t k = 0; k < N_FFT; k++)
+		/* inverse FFT */
+		kiss_fftr_cfg icfg = kiss_fftr_alloc(N_FFT, 1, 0, 0);
+		kiss_fft_cpx cx_inverse_in[N_FFT/2+1];
+		kiss_fft_scalar cx_out_real[N_FFT];
+
+		for (uint16_t k = 0; k < half_bin; k++)
 		{
-			if (k < half_bin)
-			{
-				cx_in[k].r = xk[k][0].real;
-				cx_in[k].i = xk[k][0].imag;
-			}
-			else
-			{
-				cx_in[k].r = xk[N_FFT-k][0].real;
-				cx_in[k].i = xk[N_FFT-k][0].imag;
-			}
+			//cx_inverse_in[k].r = (k+1)*(k+1)*5.6/8 + 1.4*(k+1) + 3; //xk[k][0].real;
+			//cx_inverse_in[k].i = -1 * (k+1); ;// xk[k][0].imag;
+			cx_inverse_in[k].r = xk[k][0].real;
+			cx_inverse_in[k].i = xk[k][0].imag;
 		}
 
-		/* inverse FFT */
-		cfg = kiss_fft_alloc(N_FFT, 1, NULL, NULL);
-		kiss_fft(cfg, cx_in, cx_out);
+		//for (int i = 0; i<5; i++)
+		//{
+		//	cx_inverse_in[i].i = -1 * i;
+		//	cx_inverse_in[i].r = i*i*5.6 + 1.4*i + 3;
+		//	printf("cx_inverse_in[%d]=%f\n", i, cx_inverse_in[i].r);
+		//}
+
+		//kiss_fftri(icfg, cx_inverse_in, cx_out_real);
+		//for (int i = 0; i<8; i++)
+		//{
+		//	printf("cx_out_real[%d]=%f\n", i, cx_out_real[i]);
+		//	//printf("cx_out[%d]=%f + %f \n", i,cx_out[i].r,cx_out[i].i);
+		//}
+
+		kiss_fftri(icfg, cx_inverse_in, cx_out_real);
+
+		//FILE *fp = NULL;
+
+		//char str[12];
+		//float a = 0.1234;
+		//fp = fopen("cx_inverse_in.txt", "w");
+		//if (!fp) {
+		//	printf("can't open audio file\n");
+		//	exit(1);
+		//}
+		//fprintf(fp,str, "%4.6lff", a);
+
+		////fwrite(&a,sizeof(a),1, fp);
+		//fclose(fp);
+
+		//kiss_fft(icfg, cx_in, cx_out);
+		free(icfg);
 
 		/* concatenate signal */
 		for (uint16_t j = i; j < WinLen; j++)
