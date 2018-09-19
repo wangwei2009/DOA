@@ -43,8 +43,8 @@ figure,plot(0:step:360-step,P/max(P))
 % audiowrite('DS.wav',real(DS),fs)
 % audiowrite('signal1.wav',signal(:,1),fs)
 
-[ z ] = postprocessing(x1,DS,fs,(index)*step);
-audiowrite('z9.wav',z,fs)
+% [ z ] = postprocessing(x1,DS,fs,(index)*step);
+% audiowrite('z9.wav',z,fs)
 
 
 

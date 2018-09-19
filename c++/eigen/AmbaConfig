@@ -1,0 +1,22 @@
+##
+## app/utility/upgrade_partition/AmbaConfig
+##
+## History:
+##    2014/06/03 - [Ken He] Created file
+##
+## Copyright (C) 2014-2018, Ambarella, Inc.
+##
+## All rights reserved. No Part of this file may be reproduced, stored
+## in a retrieval system, or transmitted, in any form, or by any means,
+## electronic, mechanical, photocopying, recording, or otherwise,
+## without the prior consent of Ambarella, Inc.
+##
+
+#### IR CUT ####
+
+config BUILD_SKL_EIGEN
+	bool "Build eigen"
+	default y
+	help
+		Build sky eigen
+
