@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Eigen/Core"
+#include <fstream>
 #include<string>
 #include <iostream>
 using namespace Eigen;
