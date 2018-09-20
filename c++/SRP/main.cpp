@@ -25,10 +25,10 @@ int main()
 {
 	Wav wav;
 
-	const char *mic1 = "../../TestAudio/respeaker/mic1-4/2.wav";
-	const char *mic2 = "../../TestAudio/respeaker/mic1-4/3.wav";
-	const char *mic3 = "../../TestAudio/respeaker/mic1-4/4.wav";
-	const char *mic4 = "../../TestAudio/respeaker/mic1-4/5.wav";
+	const char *mic1 = "../../TestAudio/respeaker/mic1-4_2/2.wav";
+	const char *mic2 = "../../TestAudio/respeaker/mic1-4_2/3.wav";
+	const char *mic3 = "../../TestAudio/respeaker/mic1-4_2/4.wav";
+	const char *mic4 = "../../TestAudio/respeaker/mic1-4_2/5.wav";
 
 
 	float *data[Nele];
@@ -75,7 +75,7 @@ int main()
 		
 	}
 
-	Write_File<int>(E, 360, "E2.txt");
+	//Write_File<int>(E, 360, "E2.txt");
 
 	sort_result result = BubbleSort(E, 360);
 

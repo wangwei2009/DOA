@@ -125,14 +125,9 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
 				//cx_inverse_in[k].i = cx_inverse_in[k].i + xk[k][n].imag;;
 
 			}
-
-		}
-
-
-		for (uint16_t k = 0; k < half_bin; k++)
-		{
 			cx_inverse_in[k].r = xk[k][0].real;
 			cx_inverse_in[k].i = xk[k][0].imag;
+
 		}
 
 		kiss_fftri(icfg, cx_inverse_in, cx_out_real);

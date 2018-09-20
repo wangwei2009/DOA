@@ -10,7 +10,7 @@ c = 340.0;
 d = 0.0457;
 %%
 % more test audio file in ../../TestAudio/ folder
-path = '../../TestAudio/respeaker/mic1-4/';
+path = '../../TestAudio/respeaker/mic1-4_2/';
 [s1,fs] = audioread([path,'“ÙπÏ-2.wav']);
 s5 = audioread([path,'“ÙπÏ-3.wav']);
 s4 = audioread([path,'“ÙπÏ-4.wav']);
