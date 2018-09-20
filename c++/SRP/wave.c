@@ -56,7 +56,7 @@ void wavread(Wav *wav,const char * filename)
     wav->fs = fmt.SampleRate;
 
     wav->ch = fmt.NumChannels;
-    wav->samples_per_ch = data.Subchunk2Size/fmt.NumChannels/fmt.BitsPerSample;
+    wav->samples_per_ch = data.Subchunk2Size/fmt.NumChannels/2;
 
 
     wav->data= (int16_t *)malloc(wav->samples_per_ch*sizeof(int16_t));

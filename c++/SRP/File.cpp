@@ -76,55 +76,31 @@ void Read_File(float * Indata, int length, std::string FileName)
 }
 
 
-void Write_File(double **OutData, int r, int c, const char *FileName)
-{
-	using namespace std;
-	ofstream ostrm;
-	ostrm.open(FileName);
-
-	if (ostrm.good())
-	{
-		cout << "successfully" << endl;
-		for (int i = 0; i < r; i++)
-		{
-			//for (int j = 0; j < c; j++)
-			//{
-			//	ostrm << OutData[i][j] << ",";
-
-			//}
-			//ostrm << endl;
-		}
-
-	}
-	else
-	{
-		cout << "Failed!" << endl;
-
-	}
-	ostrm.close();
-
-}
-void Write_File(float *OutData, int L,const char *FileName)
-{
-	using namespace std;
-	ofstream ostrm;
-	ostrm.open(FileName);
-
-	if (ostrm.good())
-	{
-		cout << "successfully" << endl;
-		for (int i = 0; i < L; i++)
-		{
-			ostrm << OutData[i] << ",";
-			ostrm << endl;
-		}
-
-	}
-	else
-	{
-		cout << "Failed!" << endl;
-
-	}
-	ostrm.close();
-
-}
+//void Write_File(double **OutData, int r, int c, const char *FileName)
+//{
+//	using namespace std;
+//	ofstream ostrm;
+//	ostrm.open(FileName);
+//
+//	if (ostrm.good())
+//	{
+//		cout << "successfully" << endl;
+//		for (int i = 0; i < r; i++)
+//		{
+//			//for (int j = 0; j < c; j++)
+//			//{
+//			//	ostrm << OutData[i][j] << ",";
+//
+//			//}
+//			//ostrm << endl;
+//		}
+//
+//	}
+//	else
+//	{
+//		cout << "Failed!" << endl;
+//
+//	}
+//	ostrm.close();
+//
+//}

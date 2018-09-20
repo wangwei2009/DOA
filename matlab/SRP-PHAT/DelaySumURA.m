@@ -49,7 +49,7 @@ for i = 1:inc:length(x(:,1))-frameLength
     Cf = [yf;conj(flipud(yf(2:N/2)))];
     
     % 恢复延时累加的信号
-    yds(i:i+frameLength-1) = yds(i:i+frameLength-1)+(ifft(Cf));
+    yds(i:i+frameLength-1) = yds(i:i+frameLength-1)+(ifft(Cf)*512);
     
     
     % 恢复各路对齐后的信号

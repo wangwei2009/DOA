@@ -1,4 +1,3 @@
-
 #include "DelaySum.h"
 #include<stdint.h>
 #include<math.h>
@@ -46,7 +45,7 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
         /* steering vector */
         for(int8_t i=0;i<Nele;i++)
         {
-			if (k < 15 || k > 5000 * N / fs)
+			if (k < 15 || k >= 5000 * N / fs)
 			{
 				H[k][i].real = 1;
 				H[k][i].imag = 0;
@@ -75,13 +74,13 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
         for(uint8_t n = 0;n<Nele;n++)
         {
 			
-            for(uint16_t l = i;l<WinLen+i;l++)
+            for(int32_t l = i;l<WinLen+i;l++)
             {
                 cx_in[l-i].r=x[n][l]*win[l-i];
 				cx_in[l - i].i = 0;
             }
             kiss_fft( cfg , cx_in , cx_out );
-			for (uint16_t l = i; l<half_bin + i; l++)
+			for (int32_t l = i; l<half_bin + i; l++)
 			{
 				/*
 				complex multiply :
@@ -146,9 +145,9 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
 		free(icfg);
 
 		/* concatenate signal */
-		for (uint16_t j = i; j < WinLen; j++)
+		for (int32_t j = i; j < WinLen+i; j++)
 		{
-			yout[j] = yout[j] + sqrt(cx_out_real[j - i]*cx_out_real[j - i]);
+			yout[j] = yout[j] + cx_out_real[j - i];
 
 		}
 

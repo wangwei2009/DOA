@@ -1,15 +1,17 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdint.h>
-
+#include <fstream>
 #include"DelaySum.h"
 #include "kiss_fftr.h"
 #include "kiss_fft.h"
 #include "kiss_fftr.h"
-
 #include "File.h"
+#include "Sort.h"
 
 #include<iostream>
+
+#include<time.h>
 using namespace std;
 
 extern "C"
@@ -17,6 +19,7 @@ extern "C"
    #include"wave.h"
 
 }
+
 int main()
 {
 	kiss_fftr_cfg cfg = kiss_fftr_alloc(8, 1, 0, 0);
@@ -71,23 +74,38 @@ int main()
 	uint32_t DataLen = wav.samples_per_ch;
 
 	float *yout = (float *)malloc(DataLen * sizeof(float));
-	memset(yout, 0, DataLen);
+	//static float *yout = new float[DataLen];
 
-	float E[360] = { 0 };
 
-	for (uint16_t i = 0; i < 360; i++)
+	int E[360] = { 0 };
+
+	clock_t start_time = clock();
+
+	for (uint16_t i = 0; i < 360; i=i+1)
 	{
+		memset(yout, 0, DataLen * sizeof(yout));
 		DelaySumURA(data, yout, fs, DataLen, N_FFT, WinLen, 256, r, i);
-		Write_File(yout, DataLen, "yout1.txt");
-		for (uint16_t j = 0; j < DataLen; j++)
+		//Write_File(yout, DataLen, "yout1.txt");
+		for (uint32_t j = 0; j < DataLen; j++)
 		{
-			E[i] = E[i] + yout[j] * yout[j];
+			E[i] = E[i] + (int)(yout[j] * yout[j]);
 		}
+		
 	}
 
-	Write_File(E, 360, "E.txt");
+	//Write_File<int>(E, 360, "E.txt");
+
+	sort_result result = BubbleSort(E, 360);
+
+	cout << "peak index = " << result.Maxindex << endl;
+
+	clock_t end_time = clock();
+	cout << "time cost:" << 1.0*(end_time - start_time) / CLOCKS_PER_SEC * 1000 << "ms" << endl;
+
+	//result = BubbleSort(E, 360);
 
 	free(yout);
+	//delete []yout;
 
 
 
