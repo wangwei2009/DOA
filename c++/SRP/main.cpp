@@ -75,7 +75,7 @@ int main()
 		
 	}
 
-	//Write_File<int>(E, 360, "E.txt");
+	Write_File<int>(E, 360, "E2.txt");
 
 	sort_result result = BubbleSort(E, 360);
 

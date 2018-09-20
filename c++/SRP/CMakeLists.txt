@@ -22,7 +22,7 @@ ADD_DEFINITIONS("-fPIC")
 ADD_DEFINITIONS("-Wl,-Bsymbolic -lm")
 ADD_DEFINITIONS("-std=c++11")
 SET(CMAKE_CXX_FLAGS "-Wall -fPIC -s  -std=c++11 -Wl,-Bsymbolic -lm -lpthread -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS")
-SET(CMAKE_C_FLAGS "-Wall -fPIC -s -Wl,-Bsymbolic -lm -lpthread -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS")
+SET(CMAKE_C_FLAGS "-Wall -fPIC -s -std=c99 -Wl,-Bsymbolic -lm -lpthread -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS")
 
 #****************************This is Compiling environment Flag****************************
 #SET(CMAKE_SYSTEM_NAME linux)

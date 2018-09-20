@@ -10,8 +10,7 @@
 #include<fstream>
 using namespace std;
 
-float gamma[Nele] = { 0,90,180,270 };//麦克风位置
-//float gamma[Nele] = {30,90,150,210,270,330};//麦克风位置
+
 
 /* FFT */
 kiss_fft_scalar cx_in[WinLen];
@@ -62,7 +61,8 @@ void srp_destroy()
 }
 int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int16_t N, int16_t frameLength, int16_t inc, float r, int16_t angle)
 {
-
+	float gamma[Nele] = { 0,90,180,270 };//麦克风位置
+										 //float gamma[Nele] = {30,90,150,210,270,330};//麦克风位置
     /* calculate time delay tau*/
     float *tao = CalculateTau(gamma,angle);
 
@@ -120,6 +120,10 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
 			{
 				xk[k][0].real = xk[k][0].real + xk[k][n].real;
 				xk[k][0].imag = xk[k][0].imag + xk[k][n].imag;
+
+				//cx_inverse_in[k].r = cx_inverse_in[k].r+ xk[k][n].real;
+				//cx_inverse_in[k].i = cx_inverse_in[k].i + xk[k][n].imag;;
+
 			}
 
 		}
@@ -191,13 +195,18 @@ float * CalculateTau(float *gamma,float angle)
     double theta = 90*pi/180; 
 	angle = angle*pi / 180;
 
-    Angle2Radian(gamma);
+	for (int8_t i = 0; i<Nele; i++)
+	{
+		gamma[i] = gamma[i] * pi / 180;
+		//gamma[i] = gamma[i] * 0.0175;
+	}
 
     for(int8_t i=0;i<Nele;i++)
     {
         double angle_diff = (angle-gamma[i]);
 
         gamma[i]=r*sin(theta)*cos(angle_diff)/c;
+		//gamma[i] = cos(angle_diff)*7439.8;
     }
 
     return gamma;

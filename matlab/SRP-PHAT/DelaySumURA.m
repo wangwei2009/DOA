@@ -46,7 +46,7 @@ for i = 1:inc:length(x(:,1))-frameLength
     % phase transformed
     %x_fft = bsxfun(@rdivide, x_fft,abs(d(1:N/2+1,:)));
     yf = sum(x_fft,2);
-    Cf = [yf;conj(flipud(yf(2:N/2)))];t
+    Cf = [yf;conj(flipud(yf(2:N/2)))];
     
     % 恢复延时累加的信号
     yds(i:i+frameLength-1) = yds(i:i+frameLength-1)+(ifft(Cf)*512);
