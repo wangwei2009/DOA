@@ -14,6 +14,7 @@
 #include<time.h>
 using namespace std;
 
+
 extern "C"
 {
    #include"wave.h"
@@ -22,27 +23,6 @@ extern "C"
 
 int main()
 {
-	kiss_fftr_cfg cfg = kiss_fftr_alloc(8, 1, 0, 0);
-
-
-	kiss_fft_cpx cx_in[5];
-	kiss_fft_scalar cx_out[8];
-
-	for (int i = 0; i<5; i++)
-	{
-		cx_in[i].i = -1 * i;
-		cx_in[i].r = i*i*5.6 + 1.4*i + 3;
-		printf("cx_in[%d]=%f\n", i, cx_in[i].r);
-	}
-
-	kiss_fftri(cfg, cx_in, cx_out);
-	for (int i = 0; i<8; i++)
-	{
-		printf("cx_out[%d]=%f\n", i, cx_out[i]);
-		//printf("cx_out[%d]=%f + %f \n", i,cx_out[i].r,cx_out[i].i);
-	}
-	free(cfg);
-
 	Wav wav;
 
 	const char *mic1 = "../../TestAudio/respeaker/mic1-4/2.wav";
@@ -81,6 +61,8 @@ int main()
 
 	clock_t start_time = clock();
 
+	srp_Init();
+
 	for (uint16_t i = 0; i < 360; i=i+1)
 	{
 		memset(yout, 0, DataLen * sizeof(yout));
@@ -108,6 +90,8 @@ int main()
 	//delete []yout;
 
 
+
+	srp_destroy();
 
 	return 0;
 

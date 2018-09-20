@@ -9,29 +9,59 @@
 #include<iostream>
 #include<fstream>
 using namespace std;
+
+float gamma[Nele] = { 0,90,180,270 };//麦克风位置
+//float gamma[Nele] = {30,90,150,210,270,330};//麦克风位置
+
+/* FFT */
+kiss_fft_scalar cx_in[WinLen];
+kiss_fft_cpx cx_out[WinLen];
+kiss_fftr_cfg cfg = kiss_fftr_alloc(N_FFT, 0, NULL, NULL);
+
+/* inverse FFT */
+kiss_fftr_cfg icfg = kiss_fftr_alloc(N_FFT, 1, 0, 0);
+kiss_fft_cpx cx_inverse_in[N_FFT / 2 + 1];
+kiss_fft_scalar cx_out_real[N_FFT];
+
+int16_t half_bin = (N_FFT / 2 + 1);
+
+/* malloc normalized frequency bin */
+double *omega = (double *)malloc(half_bin * sizeof(double));
+
+Complex **H;
+Complex **xk;
+
+
+void srp_Init()
+{
+	/* malloc frequency bin weights */
+	H = (Complex **)malloc(half_bin * sizeof(Complex *));
+	for (int16_t i = 0; i<half_bin; i++)
+		H[i] = (Complex *)malloc(Nele * sizeof(Complex));
+
+	/* malloc frequency bin */
+	xk = (Complex **)malloc(half_bin * sizeof(Complex *));
+	for (int16_t i = 0; i<half_bin; i++)
+		xk[i] = (Complex *)malloc(Nele * sizeof(Complex));
+}
+void srp_destroy()
+{
+	free(cfg);
+	free(icfg);
+	free(omega);
+
+	for (int16_t i = 0; i < half_bin; i++)
+		free(H[i]);
+
+	free(H);
+
+	for (int16_t i = 0; i < half_bin; i++)
+		free(xk[i]);
+
+	free(xk);
+}
 int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int16_t N, int16_t frameLength, int16_t inc, float r, int16_t angle)
 {
-
-    int16_t half_bin = (N_FFT/2+1);
-
-    /* malloc normalized frequency bin */
-    double *omega = (double *)malloc(half_bin*sizeof(double));
-
-
-    /* malloc frequency bin weights */
-    Complex **H = (Complex **)malloc(half_bin*sizeof(Complex *));
-    for(int16_t i=0;i<half_bin;i++)
-        H[i] = (Complex *)malloc(Nele*sizeof(Complex));
-
-    /* malloc frequency bin */
-    Complex **xk = (Complex **)malloc(half_bin*sizeof(Complex *));
-    for(int16_t i=0;i<half_bin;i++)
-        xk[i] = (Complex *)malloc(Nele*sizeof(Complex));
-
-
-
-	float gamma[Nele] = { 0,90,180,270};//麦克风位置
-    //float gamma[Nele] = {30,90,150,210,270,330};//麦克风位置
 
     /* calculate time delay tau*/
     float *tao = CalculateTau(gamma,angle);
@@ -60,13 +90,6 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
         }
     }
 
-    double *frame_bin ;//= (double *)malloc(frameLength*sizeof(double));
-
-    kiss_fft_cpx cx_in[WinLen];
-    kiss_fft_cpx cx_out[WinLen];
-	kiss_fft_cfg cfg = kiss_fft_alloc(N_FFT, 0, NULL, NULL);
-
-
     for(int32_t i = 0;i<DataLen-WinLen*2;i=i+inc)
     {
 
@@ -76,10 +99,9 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
 			
             for(int32_t l = i;l<WinLen+i;l++)
             {
-                cx_in[l-i].r=x[n][l]*win[l-i];
-				cx_in[l - i].i = 0;
+                cx_in[l-i]=x[n][l]*win[l-i];
             }
-            kiss_fft( cfg , cx_in , cx_out );
+            kiss_fftr( cfg , cx_in , cx_out );
 			for (int32_t l = i; l<half_bin + i; l++)
 			{
 				/*
@@ -102,10 +124,6 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
 
 		}
 
-		/* inverse FFT */
-		kiss_fftr_cfg icfg = kiss_fftr_alloc(N_FFT, 1, 0, 0);
-		kiss_fft_cpx cx_inverse_in[N_FFT/2+1];
-		kiss_fft_scalar cx_out_real[N_FFT];
 
 		for (uint16_t k = 0; k < half_bin; k++)
 		{
@@ -142,8 +160,6 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
 		ostrm.close();
 #endif
 
-		free(icfg);
-
 		/* concatenate signal */
 		for (int32_t j = i; j < WinLen+i; j++)
 		{
@@ -152,22 +168,7 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
 		}
 
     }
-
-
-    for (int16_t i = 0; i < half_bin; i++)
-        free(H[i]);
-
-    free(H);
-
-    for (int16_t i = 0; i < half_bin; i++)
-        free(xk[i]);
-
-    free(xk);
-
-    free(omega);
-
 	
-	free(cfg);
 	return 0;
 }
 
