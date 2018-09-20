@@ -90,5 +90,5 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 #ADD_LIBRARY(kiss_fft SHARED ${DIR_SRCS} kiss_fft.c)
 #TARGET_LINK_LIBRARIES(VA_Lib libopencv_imgproc.a libopencv_core.a libopencv_highgui.a VA_Lib IlmImf libjasper libjpeg libpng libtiff zlib)
 
-add_executable(DOA_SRP main.c wave.c DelaySum.cpp kiss_fftr.c kiss_fft.c File.cpp Sort.cpp)
+add_executable(DOA_SRP main.cpp wave.c DelaySum.cpp kiss_fftr.c kiss_fft.c File.cpp Sort.cpp)
 TARGET_LINK_LIBRARIES(DOA_SRP m pthread)
