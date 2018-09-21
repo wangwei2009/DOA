@@ -30,6 +30,8 @@ double *omega = (double *)malloc(half_bin * sizeof(double));
 Complex **H;
 Complex **xk;
 
+float **tao;
+
 
 void srp_Init()
 {
@@ -42,6 +44,16 @@ void srp_Init()
 	xk = (Complex **)malloc(half_bin * sizeof(Complex *));
 	for (int16_t i = 0; i<half_bin; i++)
 		xk[i] = (Complex *)malloc(Nele * sizeof(Complex));
+
+    float gamma[Nele] = { 0,90,180,270 };//麦克风位置
+    /* precompute delay tau */
+    tao = (float **)malloc(Nele * sizeof(float *));
+    for (int16_t i = 0; i<360; i++)
+    {
+        tao[i] = (float *)malloc(Nele * sizeof(float));
+        /* calculate time delay tau*/
+        CalculateTau(gamma,tao[i],i);
+    }
 }
 void srp_destroy()
 {
@@ -61,11 +73,6 @@ void srp_destroy()
 }
 int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int16_t N, int16_t frameLength, int16_t inc, float r, int16_t angle)
 {
-	float gamma[Nele] = { 0,90,180,270 };//麦克风位置
-										 //float gamma[Nele] = {30,90,150,210,270,330};//麦克风位置
-    /* calculate time delay tau*/
-    float *tao = CalculateTau(gamma,angle);
-
     /*Euler's formula e^ix = cos(x)+i*sin(x)*/
     for(int16_t k=0;k<half_bin;k++)
     {
@@ -82,7 +89,7 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
 			}
 			else
 			{
-				double x = omega[k] * tao[i];
+                double x = omega[k] * tao[i][angle];
 				H[k][i].real = cos(x);
 				H[k][i].imag = -1 * sin(x);
 			}
@@ -183,7 +190,7 @@ int8_t Angle2Radian(float *gamma)
     else
         return -1;
 }
-float * CalculateTau(float *gamma,float angle)
+float * CalculateTau(float *gamma,float *tao,float angle)
 {
     int16_t c = 340;
     float r = 0.0457;
@@ -192,18 +199,18 @@ float * CalculateTau(float *gamma,float angle)
 
 	for (int8_t i = 0; i<Nele; i++)
 	{
-		gamma[i] = gamma[i] * pi / 180;
+        tao[i] = gamma[i] * pi / 180;
 		//gamma[i] = gamma[i] * 0.0175;
 	}
 
     for(int8_t i=0;i<Nele;i++)
     {
-        double angle_diff = (angle-gamma[i]);
+        double angle_diff = (angle-tao[i]);
 
-        gamma[i]=r*sin(theta)*cos(angle_diff)/c;
+        tao[i]=r*sin(theta)*cos(angle_diff)/c;
 		//gamma[i] = cos(angle_diff)*7439.8;
     }
 
-    return gamma;
+    return tao;
 
 }//

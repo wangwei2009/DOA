@@ -23,7 +23,7 @@ extern "C"
 
 }
 
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 #ifdef _DEBUG
 #define New   new(_NORMAL_BLOCK, __FILE__, __LINE__)
@@ -35,10 +35,10 @@ int main(int argc, char *argv[])
 	//_CrtSetBreakAlloc(181);
 	Wav wav;
 
-	const char *mic1 = "../../TestAudio/respeaker/mic1-4_2/2.wav";
-	const char *mic2 = "../../TestAudio/respeaker/mic1-4_2/3.wav";
-	const char *mic3 = "../../TestAudio/respeaker/mic1-4_2/4.wav";
-	const char *mic4 = "../../TestAudio/respeaker/mic1-4_2/5.wav";
+    const char *mic1 = "../../../TestAudio/respeaker/mic1-4_2/2.wav";
+    const char *mic2 = "../../../TestAudio/respeaker/mic1-4_2/3.wav";
+    const char *mic3 = "../../../TestAudio/respeaker/mic1-4_2/4.wav";
+    const char *mic4 = "../../../TestAudio/respeaker/mic1-4_2/5.wav";
 
 
 	float *data[Nele];
@@ -99,16 +99,16 @@ int main(int argc, char *argv[])
 	srp_destroy();
 
 	free(yout);
-	for (uint16_t i = 0; i < Nele; i++)
-	{
-		free(data[i]);
-	}
+//	for (uint16_t i = 0; i < Nele; i++)
+//	{
+//		free(data[i]);
+//	}
 
 
 
 
 
-	_CrtDumpMemoryLeaks();//调试运行到该步，输出检测信息
+    //_CrtDumpMemoryLeaks();//调试运行到该步，输出检测信息
 
 	return 0;
 

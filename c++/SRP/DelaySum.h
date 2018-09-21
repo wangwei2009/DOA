@@ -24,7 +24,7 @@ typedef struct
 
     int16_t	DelaySumURA(float **x, float * yout,uint16_t fs,uint32_t DataLen,int16_t N, int16_t frameLength, int16_t inc, float r, int16_t angle);
     int8_t Angle2Radian(float *gamma);
-    float * CalculateTau(float *gamma,float angle);
+    float * CalculateTau(float *gamma,float *tao,float angle);
 	void srp_Init();
 	void srp_destroy();
 
