@@ -58,7 +58,7 @@ void wavread(Wav *wav,const char * filename)
     wav->ch = fmt.NumChannels;
     wav->samples_per_ch = data.Subchunk2Size/fmt.NumChannels/2;
 
-
+	
     wav->data= (int16_t *)malloc(wav->samples_per_ch*sizeof(int16_t));
 	fread(wav->data, 2, wav->samples_per_ch*wav->ch, fp);
 
@@ -66,6 +66,8 @@ void wavread(Wav *wav,const char * filename)
 
 	for (int i = 0; i < wav->samples_per_ch; i++)
 		wav->dataf[i] = wav->data[i] / 32768.0;
+
+	free(wav->data);
 
 
 

@@ -2,6 +2,8 @@
 #include<stdlib.h>
 #include<stdint.h>
 #include <fstream>
+#include <sys/unistd.h>
+
 #include"DelaySum.h"
 #include "kiss_fftr.h"
 #include "kiss_fft.h"
@@ -21,8 +23,16 @@ extern "C"
 
 }
 
-int main()
+#include <crtdbg.h>
+
+#ifdef _DEBUG
+#define New   new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+#define _CRTDBG_MAP_ALLO
+
+int main(int argc, char *argv[])
 {
+	//_CrtSetBreakAlloc(181);
 	Wav wav;
 
 	const char *mic1 = "../../TestAudio/respeaker/mic1-4_2/2.wav";
@@ -86,12 +96,19 @@ int main()
 
 	//result = BubbleSort(E, 360);
 
-	free(yout);
-	//delete []yout;
-
-
-
 	srp_destroy();
+
+	free(yout);
+	for (uint16_t i = 0; i < Nele; i++)
+	{
+		free(data[i]);
+	}
+
+
+
+
+
+	_CrtDumpMemoryLeaks();//调试运行到该步，输出检测信息
 
 	return 0;
 
