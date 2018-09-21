@@ -318,3 +318,7 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+*CMakeFiles*
+c++/SRP/build
+c++/SRP/install
