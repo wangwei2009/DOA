@@ -320,5 +320,6 @@ ModelManifest.xml
 .fake/
 
 *CMakeFiles*
+*Makefile*
 c++/SRP/build
 c++/SRP/install
