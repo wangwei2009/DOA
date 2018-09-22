@@ -69,9 +69,11 @@ int main(int argc, char *argv[])
 
 	int E[360] = { 0 };
 
-	clock_t start_time = clock();
+	
 
 	srp_Init();
+
+	clock_t start_time = clock();
 
 	for (uint16_t i = 0; i < 360; i=i+1)
 	{
@@ -110,6 +112,9 @@ int main(int argc, char *argv[])
 
     //_CrtDumpMemoryLeaks();//调试运行到该步，输出检测信息
 
+
 	return 0;
+
+	
 
 }

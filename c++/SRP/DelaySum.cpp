@@ -47,7 +47,7 @@ void srp_Init()
 
     float gamma[Nele] = { 0,90,180,270 };//麦克风位置
     /* precompute delay tau */
-    tao = (float **)malloc(Nele * sizeof(float *));
+    tao = (float **)malloc(360 * sizeof(float *));
     for (int16_t i = 0; i<360; i++)
     {
         tao[i] = (float *)malloc(Nele * sizeof(float));
@@ -89,7 +89,7 @@ int16_t DelaySumURA(float * * x, float * yout,uint16_t fs, uint32_t DataLen, int
 			}
 			else
 			{
-                double x = omega[k] * tao[i][angle];
+                double x = omega[k] * tao[angle][i];
 				H[k][i].real = cos(x);
 				H[k][i].imag = -1 * sin(x);
 			}
