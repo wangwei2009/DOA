@@ -326,3 +326,5 @@ c++/SRP/build
 c++/SRP/install
 
 c++/SRP/SRP.si4project
+
+*.cbp
