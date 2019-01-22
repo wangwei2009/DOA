@@ -10,7 +10,7 @@ imag=sqrt(-1);
 element_num=5;%阵元数
 % d_lamda=1/2;%阵元间距d与波长lamda的关系
 theta=linspace(-pi/2,pi/2,180);    %扫描范围
-theta0=90;                    %注视方向
+theta0=0;                    %注视方向
 theta0 = theta0*pi/180;
 % w=exp(-1j*2*pi*d_lamda*sin(theta0)*[0:element_num-1]');
 k = 64;
@@ -88,8 +88,8 @@ zlim([-40 0]);
 figure,mesh(theta*180/pi,(0:1:N/2+1-1)*fs/N,pow2db(abs(y2)/max(max(abs(y2)))))
 zlim([-40 0]);
 
-figure,plot(f,pow2db(abs(DI_dsb))),ylim([0 15]),grid on
-hold on,plot(f,pow2db(abs(DI_sdb))),ylim([0 15]),grid on
+figure,plot(f,pow2db(abs(DI_dsb))),ylim([0 9]),grid on
+hold on,plot(f,pow2db(abs(DI_sdb))),ylim([0 9]),grid on
 legend('delaysum','superdirective'),title('Directivity Index')
 
 figure,plot(f,pow2db(WGN_dsb)),grid on

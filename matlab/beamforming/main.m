@@ -1,11 +1,8 @@
-%% SRP Estimate of Direction of Arrival at Microphone Array
-% Frequency-domain delay-and-sum test
+%% 
+% test superdirective beamformer with real recordings
 %  
 %%
-
-% x = filter(Num,1,x0);
 c = 340.0;
-
 % XMOS circular microphone array radius
 d = 0.0420;
 %%
@@ -28,9 +25,8 @@ s5 = audioread([path,'“ÙπÏ-6.wav']);
 s6 = audioread([path,'“ÙπÏ-7.wav']);
 signal = [s1,s2,s3,s4,s5,s6];
 M = size(signal,2);
-%%
+%% SRP
 t = 0;
-
 % minimal searching grid
 step = 1;
 
@@ -52,9 +48,11 @@ figure,plot(0:step:360-step,P/max(P)),ylim([0.86 1])
 ang = (index)*step
 
 % ang = 210;
+bhi = fir1(512,0.01,'high'); %High-Pass
+signal = filter(bhi,1,signal);
 
+%% Delay-sum
 [ DS0, x1] = DelaySumURA(signal,fs,1024,1024,512,d,ang/180*pi);
-% DS = filter(HP_Num,1,DS0);
 % audiowrite([path,'xmos-DS0.wav'],real(DS0),fs)
 %% diffuse noise field MSC
 N = 256;
@@ -78,16 +76,11 @@ for i = 1:M
         end
     end
 end
-[b,a] = sos2tf(SOS);
-signal0 = filter(b,a,signal);
-[ super1, x1,~,DI] = superdirectiveMVDR(signal0,fs,N,N,N/2,d,ang/180*pi,Fvv);
+
+%% MVDR
+[ super1, x1,~,DI] = superdirectiveMVDR(signal,fs,N,N,N/2,d,ang/180*pi,Fvv);
 % audiowrite([path,'xmos-super12.wav'],super1,fs)
 
-% audiowrite('DS7.wav',real(DS),fs)
-% audiowrite('signal1.wav',signal(:,1),fs)
-
-% [ z ] = postprocessing(x1,super1,fs,ang);
-% audiowrite('z4.wav',z,fs)
 
 
 

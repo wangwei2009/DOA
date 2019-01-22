@@ -8,14 +8,20 @@ c = 340.0;
 
 % XMOS circular microphone array radius
 d = 0.0457;
+% XMOS respeaker 4MIC array
+d = 0.032;
 %%
 % more test audio file in ../../TestAudio/ folder
 path = '../../TestAudio/respeaker/mic1-4_2/';
+path = 'rec1/';
+interval = 16000:300000;
 [s1,fs] = audioread([path,'“ÙπÏ-2.wav']);
 s5 = audioread([path,'“ÙπÏ-3.wav']);
 s4 = audioread([path,'“ÙπÏ-4.wav']);
 s2 = audioread([path,'“ÙπÏ-5.wav']);
 signal = [s1,s5,s4,s2];
+M = size(signal,2);
+signal = signal(interval,:);
 %%
 t = 0;
 
@@ -25,6 +31,8 @@ step = 1;
 P = zeros(1,length(0:step:360-step));
 tic
 h = waitbar(0,'Please wait...');
+N_FFT = 512;
+freqBin = zeros(N_FFT,M);
 for i = 0:step:360-step
     % Delay-and-sum beamforming
     [ DS, x1] = DelaySumURA(signal,fs,512,512,256,d,i/180*pi);

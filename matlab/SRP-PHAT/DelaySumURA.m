@@ -44,7 +44,7 @@ for i = 1:inc:length(x(:,1))-frameLength
     x_fft=bsxfun(@times, d(1:N/2+1,:),H);
     
     % phase transformed
-    %x_fft = bsxfun(@rdivide, x_fft,abs(d(1:N/2+1,:)));
+    x_fft = bsxfun(@rdivide, x_fft,abs(d(1:N/2+1,:)));
     yf = sum(x_fft,2);
     Cf = [yf;conj(flipud(yf(2:N/2)))];
     

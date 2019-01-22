@@ -8,6 +8,7 @@ c = 340.0;
 
 % XMOS circular microphone array radius
 r = 0.0420;
+d = r;
 %%
 % more test audio file in ../../TestAudio/ folder
 path = '../../../TestAudio/respeaker/mic1-4_2/';
@@ -45,24 +46,24 @@ end
 
 
 % minimal searching grid
-% step = 1;
-% 
-% P = zeros(1,length(0:step:360-step));
-% tic
-% h = waitbar(0,'Please wait...');
-% for i = 0:step:360-step
-%     % Delay-and-sum beamforming
-%     [ DS, x1] = DelaySumURA(signal,fs,512,512,256,d,i/180*pi);
-%     t = t+1;
-%     %beamformed output energy
-%     P(t) = DS'*DS;
-%     waitbar(i / length(step:360-step))
-% end
-% toc
-% close(h) 
-% [m,index] = max(P);
-% figure,plot(0:step:360-step,P/max(P)),ylim([0.86 1])
-% ang = (index)*step
+step = 1;
+
+P = zeros(1,length(0:step:360-step));
+tic
+h = waitbar(0,'Please wait...');
+for i = 0:step:360-step
+    % Delay-and-sum beamforming
+    [ DS, x1] = DelaySumURA(signal,fs,512,512,256,d,i/180*pi);
+    t = t+1;
+    %beamformed output energy
+    P(t) = DS'*DS;
+    waitbar(i / length(step:360-step))
+end
+toc
+close(h) 
+[m,index] = max(P);
+figure,plot(0:step:360-step,P/max(P)),ylim([0.86 1])
+ang = (index)*step
 
 ang = 233;
 
@@ -71,7 +72,7 @@ ang = 233;
 % audiowrite([path,'xmos-DS0.wav'],real(DS0),fs)
 %% diffuse noise field MSC
 N = 256;
-
+x = signal;
 c = 340;
 Nele = size(x,2);
 omega = zeros(frameLength,1);
