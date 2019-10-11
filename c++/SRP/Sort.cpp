@@ -1,7 +1,6 @@
 #include "Sort.h"
 #include "Sort.h"
-
-sort_result BubbleSort(int * data, int len)
+sort_result findMaxIndex(int *data, int len)
 {
 	sort_result result;
 
@@ -10,8 +9,20 @@ sort_result BubbleSort(int * data, int len)
 	for (int i = 0; i < len-1; i++)
 	{
 		if (data[i] < data[i + 1])
+		{
+			result.MaxVal = data[i + 1];
 			result.Maxindex = i + 1;
+		}
+			
 	}
+	return result;
+
+}
+sort_result BubbleSort(int * data, int len)
+{
+	sort_result result;
+
+	result.Maxindex = 0;
 	
 	int t = 0;
 	for (int i = 0; i < len - 1; i++)
@@ -23,7 +34,6 @@ sort_result BubbleSort(int * data, int len)
 				t = data[j + 1];
 				data[j + 1] = data[j];
 				data[j] = t;;
-				result.MaxVal = data[j + 1];
 			}
 		}
 	}

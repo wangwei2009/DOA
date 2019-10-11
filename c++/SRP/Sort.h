@@ -9,6 +9,7 @@ extern "C" {
 		int Maxindex;
 	}sort_result;
 
+	sort_result findMaxIndex(int *data, int len);
 	sort_result BubbleSort(int *data, int len);
 	int *QuickSort(int *data,int len);
 
