@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 
 	//Write_File<int>(E, 360, "E2.txt");
 
-	sort_result result = BubbleSort(E, 360);
+	sort_result result = findMaxIndex(E, 360);
 
 	cout << "peak index = " << result.Maxindex << endl;
 
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 
 
 
-    //_CrtDumpMemoryLeaks();//µ÷ÊÔÔËÐÐµ½¸Ã²½£¬Êä³ö¼ì²âÐÅÏ¢
+    //_CrtDumpMemoryLeaks();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 
 
 	return 0;
