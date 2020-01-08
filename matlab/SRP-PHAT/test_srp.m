@@ -8,10 +8,7 @@ s5 = audioread([path,'“ÙπÏ-3.wav']);
 s4 = audioread([path,'“ÙπÏ-4.wav']);
 s2 = audioread([path,'“ÙπÏ-5.wav']);
 x = [s1,s5,s4,s2];
-% x = loadwav('E:/work/matlab/Github/elite/2MIC_NS/pcm/sound/xmos/rec97/');
-% x = pcmread('ETAudioDump_000_16k.pcm',2);
-% x = x(110000:end,:);
-% x = loadwav('rec1_aligned/');
+
 tic
 angSpectrum = srp(x,0.032);
 toc
