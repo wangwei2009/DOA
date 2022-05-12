@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 
 	for (uint16_t i = 0; i < 360; i=i+1)
 	{
-		memset(yout, 0, DataLen * sizeof(yout));
+		memset(yout, 0, DataLen * sizeof(float));
 		DelaySumURA(data, yout, fs, DataLen, N_FFT, WinLen, 256, r, i);
 		//Write_File(yout, DataLen, "yout1.txt");
 		for (uint32_t j = 0; j < DataLen; j++)
