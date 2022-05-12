@@ -5,10 +5,11 @@ sort_result findMaxIndex(int *data, int len)
 	sort_result result;
 
 	result.Maxindex = 0;
+	result.MaxVal = data[0];
 
 	for (int i = 0; i < len-1; i++)
 	{
-		if (data[i] < data[i + 1])
+		if (result.MaxVal < data[i + 1])
 		{
 			result.MaxVal = data[i + 1];
 			result.Maxindex = i + 1;
